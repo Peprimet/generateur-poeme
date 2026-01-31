@@ -113,122 +113,185 @@
   </div>
 
 <script>
-const poems = {
-  romance: [
-`Je ne sais pas quand j’ai commencé à attendre ces moments.
-Mais ils sont devenus importants.
-Sans bruit,
-sans mise en scène.`,
+/* =========================
+   BANQUE DE TEXTES (VARIÉE)
+   ========================= */
 
-`Il n’y a rien de compliqué entre nous.
-Juste une présence.
-Et parfois,
-c’est déjà beaucoup.`,
+const data = {
+  romance: {
+    intro: [
+      "Je ne sais pas quand tout a changé.",
+      "Sans prévenir, quelque chose s’est installé.",
+      "Je n’ai rien cherché, pourtant c’est là.",
+      "Avec le temps, certaines présences comptent.",
+      "Il y a des moments qui restent."
+    ],
+    body: [
+      "Tout devient plus calme.",
+      "Je me sens à l’aise.",
+      "Le silence n’est plus lourd.",
+      "Je n’ai rien à prouver.",
+      "Les gestes sont simples.",
+      "Je laisse faire.",
+      "Je respire différemment.",
+      "Rien n’est forcé."
+    ],
+    outro: [
+      "Et ça me suffit.",
+      "Sans promesse.",
+      "Pour l’instant.",
+      "Sans chercher plus loin.",
+      "En toute simplicité."
+    ]
+  },
 
-`Je n’ai pas besoin de mots précis.
-Je ressens simplement que
-certaines choses
-méritent d’être gardées.`,
+  amour: {
+    intro: [
+      "Je pense à toi sans y réfléchir.",
+      "Ton souvenir revient doucement.",
+      "C’est devenu naturel.",
+      "Je n’essaie plus de comprendre.",
+      "Il y a une évidence tranquille."
+    ],
+    body: [
+      "Je me sens sincère.",
+      "Je ne joue aucun rôle.",
+      "Tout paraît plus clair.",
+      "Je fais confiance.",
+      "Je reste moi-même.",
+      "Je n’ai pas peur.",
+      "Je me sens stable.",
+      "Je m’ouvre sans effort."
+    ],
+    outro: [
+      "Et c’est réel.",
+      "Sans condition.",
+      "Sans excès.",
+      "Avec honnêteté.",
+      "Tout simplement."
+    ]
+  },
 
-`Le temps passe différemment.
-Je ne le retiens pas.
-Je le vis,
-tout simplement.`,
+  nature: {
+    intro: [
+      "Le monde continue sans moi.",
+      "La lumière touche le sol.",
+      "Le vent traverse l’espace.",
+      "Le paysage s’étend.",
+      "Le silence s’installe."
+    ],
+    body: [
+      "Je ralentis.",
+      "Je regarde autour de moi.",
+      "Je respire profondément.",
+      "Rien ne presse.",
+      "Tout est à sa place.",
+      "Je me laisse porter.",
+      "Je me sens ancré.",
+      "Je me détends."
+    ],
+    outro: [
+      "Et je me sens bien.",
+      "Sans penser à demain.",
+      "Juste ici.",
+      "Dans cet instant.",
+      "Sans attente."
+    ]
+  },
 
-`Je ne cherche rien de plus.
-Ce qui est là
-me suffit pour aujourd’hui.`
-  ],
-
-  amour: [
-`Je pense à toi sans effort.
-Comme une pensée familière.
-Ni lourde,
-ni envahissante.`,
-
-`Aimer n’est pas spectaculaire.
-C’est calme.
-C’est stable.
-C’est réel.`,
-
-`Je ne pose plus de questions.
-Je ressens.
-Et je laisse faire.`,
-
-`Il n’y a rien à prouver.
-Juste être là.
-Et continuer.`,
-
-`Je garde cette sensation.
-Même quand tout le reste
-devient flou.`
-  ],
-
-  nature: [
-`Le monde continue
-sans me demander mon avis.
-Et c’est reposant.`,
-
-`Je marche sans destination.
-Le paysage s’en charge.
-Je suis juste présent.`,
-
-`Le silence n’est pas vide.
-Il est plein de choses simples.
-Et ça suffit.`,
-
-`Le vent ne promet rien.
-Il passe.
-Et je le laisse passer.`,
-
-`Je respire mieux ici.
-Sans raison particulière.
-Juste parce que.`,
-
-`Rien ne presse.
-Et pour une fois,
-je l’accepte.`
-  ],
-
-  aventure: [
-`Je ne sais pas exactement où je vais.
-Mais rester immobile
-n’est plus une option.`,
-
-`Chaque pas m’éloigne
-de ce que je connais.
-Et c’est très bien comme ça.`,
-
-`Je fais confiance au mouvement.
-Même sans comprendre la suite.`,
-
-`L’inconnu n’est plus un mur.
-C’est une porte entrouverte.`,
-
-`Je continue.
-Même sans certitude.
-Surtout sans certitude.`,
-
-`Je choisis d’avancer.
-Le reste viendra plus tard.`
-  ]
+  aventure: {
+    intro: [
+      "Je ne sais pas exactement où je vais.",
+      "La route commence ici.",
+      "Je décide d’avancer.",
+      "Quelque chose m’appelle.",
+      "Le départ est clair."
+    ],
+    body: [
+      "Je fais un pas de plus.",
+      "Je sors de mes habitudes.",
+      "Je m’adapte.",
+      "Je continue.",
+      "Je prends le risque.",
+      "Je découvre autre chose.",
+      "Je vais plus loin.",
+      "Je fais confiance au mouvement."
+    ],
+    outro: [
+      "Et l’histoire continue.",
+      "Sans regret.",
+      "Avec curiosité.",
+      "Libre.",
+      "Prêt pour la suite."
+    ]
+  }
 };
 
+/* =========================
+   ANTI-RÉPÉTITION & COOLDOWN
+   ========================= */
+
+const COOLDOWN = 5000;
+let lastTime = 0;
+
+const history = {
+  romance: [],
+  amour: [],
+  nature: [],
+  aventure: []
+};
+const MAX_HISTORY = 6;
+
+/* =========================
+   OUTILS
+   ========================= */
+
+function random(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generateUniquePoem(theme) {
+  let poem;
+  let tries = 0;
+
+  do {
+    poem =
+      random(data[theme].intro) + "\n\n" +
+      random(data[theme].body) + "\n" +
+      random(data[theme].body) + "\n" +
+      random(data[theme].body) + "\n\n" +
+      random(data[theme].outro);
+
+    tries++;
+  } while (history[theme].includes(poem) && tries < 10);
+
+  history[theme].push(poem);
+  if (history[theme].length > MAX_HISTORY) {
+    history[theme].shift();
+  }
+
+  return poem;
+}
+
+/* =========================
+   FONCTION PRINCIPALE
+   ========================= */
+
 function generatePoem() {
+  const now = Date.now();
+  if (now - lastTime < COOLDOWN) return;
+  lastTime = now;
+
   const theme = document.getElementById("theme").value;
-  const list = poems[theme];
+  const poem = generateUniquePoem(theme);
 
-  const poem = list[Math.floor(Math.random() * list.length)];
-
-  const container = document.getElementById("poeme");
   const bloc = document.createElement("div");
-
   bloc.style.marginBottom = "30px";
   bloc.style.paddingBottom = "20px";
   bloc.style.borderBottom = "1px solid rgba(255,255,255,0.2)";
   bloc.innerText = poem;
 
-  container.prepend(bloc);
+  document.getElementById("poeme").prepend(bloc);
 }
 </script>
 

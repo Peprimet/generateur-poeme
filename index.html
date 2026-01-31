@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Générateur de Poèmes</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+      color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .container {
+      background: rgba(0,0,0,0.4);
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 500px;
+      text-align: center;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 18px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #e0b973;
+      cursor: pointer;
+    }
+    .poem {
+      margin-top: 20px;
+      white-space: pre-line;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🖋️ Générateur de Poèmes</h1>
+  <button onclick="generatePoem()">Générer un poème</button>
+  <div id="poem" class="poem"></div>
+</div>
+
+<script>
+const beginnings = [
+  "Sous la lune pâle,",
+  "Dans le silence du matin,",
+  "Quand la nuit respire,",
+  "Au bord du monde,"
+];
+
+const middles = [
+  "le vent murmure des secrets",
+  "les étoiles tremblent doucement",
+  "le temps s’arrête un instant",
+  "mon cœur dérive sans bruit"
+];
+
+const endings = [
+  "que personne n’entend.",
+  "dans l’écho de l’infini.",
+  "sous un ciel sans nom.",
+  "avant l’aube fragile."
+];
+
+function random(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generatePoem() {
+  document.getElementById("poem").innerText =
+`${random(beginnings)}
+${random(middles)}
+${random(endings)}`;
+}
+</script>
+
+</body>
+</html>

@@ -1,276 +1,208 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Générateur de Poèmes</title>
+<meta charset="UTF-8">
+<title>Générateur de Poèmes</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Georgia', serif;
-      color: #f5f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Georgia, serif;
+  background: #121212;
+  color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    /* Arrière-plan dynamique */
-    #background {
-      position: fixed;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      z-index: -2;
-      transition: background-image 1s ease-in-out;
-    }
+.container {
+  text-align: center;
+  padding: 40px;
+  max-width: 800px;
+  width: 90%;
+  background: rgba(255,255,255,0.08);
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
 
-    /* Assombrissement pour lisibilité */
-    #background::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      z-index: -1;
-    }
+h1 {
+  margin-bottom: 20px;
+}
 
-    .container {
-      text-align: center;
-      padding: 40px;
-      max-width: 750px;
-      width: 90%;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(6px);
-      border-radius: 18px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
+select, button {
+  padding: 12px 18px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px;
+}
 
-    h1 {
-      margin-bottom: 20px;
-    }
+select {
+  cursor: pointer;
+}
 
-    select, button {
-      padding: 10px 16px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      margin: 10px;
-      cursor: pointer;
-    }
+button {
+  background-color: #e94560;
+  color: white;
+  cursor: pointer;
+}
 
-    select {
-      background: #ffffff;
-      color: #000;
-    }
+button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
 
-    button {
-      background-color: #e94560;
-      color: white;
-      transition: transform 0.2s ease, background 0.2s ease;
-    }
+#cooldown {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
 
-    button:hover {
-      background-color: #ff5c77;
-      transform: scale(1.05);
-    }
+#poemes {
+  margin-top: 30px;
+}
 
-    #poeme {
-      margin-top: 30px;
-      padding: 25px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      white-space: pre-line;
-      font-size: 18px;
-      line-height: 1.6;
-    }
-  </style>
+.poeme {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  white-space: pre-line;
+  font-size: 18px;
+  line-height: 1.6;
+}
+</style>
 </head>
 
 <body>
 
-  <div id="background"></div>
+<div class="container">
+  <h1>📝 Générateur de Poèmes</h1>
 
-  <div class="container">
-    <h1>📝 Générateur de Poèmes</h1>
+  <select id="theme">
+    <option value="romance">Romance</option>
+    <option value="amour">Amour</option>
+    <option value="nature">Nature</option>
+    <option value="aventure">Aventure</option>
+  </select>
+  <br>
 
-    <label for="theme">Choisis un thème :</label><br>
-    <select id="theme">
-      <option value="romance">Romance</option>
-      <option value="amour">Amour</option>
-      <option value="nature">Nature</option>
-      <option value="aventure">Aventure</option>
-    </select>
-    <br>
+  <button id="btn" onclick="generatePoem()">Générer un poème</button>
 
-    <button onclick="generatePoem()">Générer un poème</button>
+  <div id="cooldown"></div>
 
-    <div id="poeme"></div>
-  </div>
+  <div id="poemes"></div>
+</div>
 
 <script>
-/* =========================
-   BANQUE DE POÈMES (ÉLARGIE)
-   ========================= */
+/* ===============================
+   BANQUE DE POÈMES
+   =============================== */
 
 const poems = {
   romance: [
-`Je ne sais pas quand tout a ralenti.
-Mais certaines présences
-changent la façon
-dont le temps passe.`,
+`Rien n’est pressé.
+On se comprend
+sans trop parler.`,
 
-`Il n’y a rien d’exagéré ici.
-Juste une douceur stable
-qui s’installe
-sans prévenir.`,
+`Il y a une douceur
+qui reste
+quand tout s’arrête.`,
 
-`Je n’attends rien de particulier.
-Je suis simplement là,
-dans ce moment
-qui compte.`,
+`Je ne cherche pas plus.
+Ce moment suffit.`,
 
-`Certains instants restent.
-Même quand le reste disparaît.
-Sans bruit.
-Sans effort.`,
+`Les silences
+ne sont plus vides.`,
 
-`Je remarque les détails.
-Les silences.
-Les choses simples
-qui font du bien.`,
+`Je reste là.
+C’est déjà beaucoup.`,
 
-`Je ne cherche pas à comprendre.
-Je laisse faire.
-Et ça suffit
-pour aujourd’hui.`,
+`Tout devient simple
+quand tu es là.`,
 
-`Tout semble plus calme.
-Comme si le monde
-avait ralenti
-juste un peu.`,
-
-`Je n’ai rien à prouver.
-Je reste.
-Et c’est déjà beaucoup.`
+`Je n’explique rien.
+Je ressens.`,
   ],
 
   amour: [
-`Je pense à toi sans raison précise.
-C’est devenu naturel,
-presque évident.`,
+`Aimer,
+c’est rester
+quand on pourrait partir.`,
 
-`Aimer n’a rien de spectaculaire.
-C’est stable.
-Présent.
-Sincère.`,
+`Je pense à toi
+sans raison précise.`,
 
-`Je ne pose plus de questions.
-Je ressens,
-et je respecte
-ce que ça devient.`,
+`Rien n’est spectaculaire.
+Tout est sincère.`,
 
-`Il n’y a rien à défendre.
-Rien à expliquer.
-Juste continuer
-dans ce sens.`,
+`Je te choisis
+sans réfléchir.`,
 
-`Je garde cette sensation,
-même quand tout change autour.`,
+`Je garde ce lien
+en moi.`,
 
-`Je fais confiance à ce lien.
-Pas parce qu’il est parfait,
-mais parce qu’il est vrai.`,
+`C’est calme.
+C’est vrai.`,
 
-`Certaines choses existent
-sans avoir besoin de mots.`,
-
-`Je ne cours plus.
-Je reste.
-Et c’est un choix.`
+`Je suis là.
+Encore.`,
   ],
 
   nature: [
-`Le monde avance
-sans m’attendre.
-Et c’est apaisant.`,
-
-`Je marche sans objectif.
-Le paysage décide
-pour moi.`,
-
-`Le silence n’est jamais vide.
-Il contient
-tout ce qui est simple.`,
-
 `Le vent passe.
-Je ne cherche pas
-à le retenir.`,
+Je l’écoute.`,
 
-`Rien ne presse ici.
-Même mes pensées
-se calment.`,
+`Le monde continue
+sans me presser.`,
 
-`Je prends le temps
-de ne rien faire.
-Et ça suffit.`,
+`Le silence
+fait du bien.`,
 
-`Le ciel ne promet rien.
-Mais il apaise
-quand même.`,
+`Je marche
+sans destination.`,
 
-`Je me sens à ma place.
-Sans raison particulière.
-Juste ici.`
+`Tout respire ici.`,
+
+`Rien n’attend.
+Tout existe.`,
+
+`Je prends le temps.`,
   ],
 
   aventure: [
-`Je ne sais pas exactement
-où je vais.
-Mais rester immobile
-n’est plus une option.`,
+`Je ne sais pas
+où je vais.`,
 
-`Chaque pas m’éloigne
-de ce que je connais.
-Et ça me va.`,
-
-`Je fais confiance
-au mouvement,
-même sans plan.`,
-
-`L’inconnu n’est plus un mur.
-C’est une direction
-possible.`,
-
-`Je continue.
-Pas par certitude.
-Par envie.`,
-
-`Je laisse derrière moi
-ce qui pèse
-et j’avance.`,
-
-`Je choisis d’essayer.
-Même sans garantie.`,
+`Avancer suffit.`,
 
 `Le chemin se crée
-au moment où
-je marche.`
+en marchant.`,
+
+`Je quitte le connu.`,
+
+`Je continue
+par envie.`,
+
+`L’inconnu m’attire.`,
+
+`Je choisis le mouvement.`,
   ]
 };
 
-/* =========================
-   COOLDOWN & ANTI-RÉPÉTITION
-   ========================= */
+/* ===============================
+   LOGIQUE COOLDOWN
+   =============================== */
 
-const COOLDOWN = 5000; // 5 secondes
-let lastTime = 0;
+const COOLDOWN = 5;
+let lastClick = 0;
+let interval = null;
 
-// mémorise les derniers poèmes par thème
+// historique anti-répétition
 const history = {
   romance: [],
   amour: [],
@@ -280,46 +212,62 @@ const history = {
 
 const MAX_HISTORY = 5;
 
-/* =========================
-   FONCTION PRINCIPALE
-   ========================= */
-
 function generatePoem() {
   const now = Date.now();
+  if ((now - lastClick) / 1000 < COOLDOWN) return;
 
-  // bloque si clic trop rapide
-  if (now - lastTime < COOLDOWN) {
-    return;
-  }
-  lastTime = now;
+  lastClick = now;
+  startCooldown();
 
   const theme = document.getElementById("theme").value;
   const list = poems[theme];
 
   let poem;
-  let tries = 0;
+  let attempts = 0;
 
-  // évite les répétitions récentes
   do {
     poem = list[Math.floor(Math.random() * list.length)];
-    tries++;
-  } while (history[theme].includes(poem) && tries < 10);
+    attempts++;
+  } while (history[theme].includes(poem) && attempts < 10);
 
-  // met à jour l'historique
   history[theme].push(poem);
   if (history[theme].length > MAX_HISTORY) {
     history[theme].shift();
   }
 
-  // création du bloc poème
-  const bloc = document.createElement("div");
-  bloc.style.marginBottom = "30px";
-  bloc.style.paddingBottom = "20px";
-  bloc.style.borderBottom = "1px solid rgba(255,255,255,0.2)";
-  bloc.innerText = poem;
+  const div = document.createElement("div");
+  div.className = "poeme";
+  div.textContent = poem;
 
-  document.getElementById("poeme").prepend(bloc);
+  document.getElementById("poemes").prepend(div);
+}
+
+/* ===============================
+   COMPTE À REBOURS VISUEL
+   =============================== */
+
+function startCooldown() {
+  const btn = document.getElementById("btn");
+  const cd = document.getElementById("cooldown");
+  let remaining = COOLDOWN;
+
+  btn.disabled = true;
+  cd.textContent = `⏳ Prochain poème dans ${remaining}s`;
+
+  clearInterval(interval);
+  interval = setInterval(() => {
+    remaining--;
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      btn.disabled = false;
+      cd.textContent = "✅ Tu peux générer un nouveau poème";
+    } else {
+      cd.textContent = `⏳ Prochain poème dans ${remaining}s`;
+    }
+  }, 1000);
 }
 </script>
+
 </body>
 </html>

@@ -5,108 +5,69 @@
 <title>Générateur de Poèmes</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
-  min-height: 100vh;
   font-family: Georgia, serif;
   background: #121212;
   color: #f5f5f5;
-}
-
-/* ===== ÉCRAN DE BIENVENUE ===== */
-#welcome {
-  position: fixed;
-  inset: 0;
-  background: #121212;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+/* ===== ÉCRAN D'ACCUEIL ===== */
+#welcome {
   text-align: center;
-  z-index: 10;
 }
 
 #welcome h1 {
-  font-size: 42px;
+  font-size: 40px;
   margin-bottom: 10px;
 }
 
 #welcome p {
-  font-size: 18px;
-  margin-bottom: 15px;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 #welcome a {
   color: #e94560;
   text-decoration: none;
   font-weight: bold;
-  margin-bottom: 25px;
 }
 
-/* 🔴 BOUTON COMMENCER */
 #welcome button {
-  padding: 15px 35px;
-  font-size: 20px;
-  border-radius: 12px;
+  margin-top: 25px;
+  padding: 14px 30px;
+  font-size: 18px;
+  border-radius: 10px;
   border: none;
   background: #e94560;
   color: white;
   cursor: pointer;
 }
 
-#welcome button:hover {
-  background: #ff5c77;
-}
-
-/* ===== APPLICATION ===== */
-.container {
+/* ===== APP ===== */
+#app {
   display: none;
-  min-height: 100vh;
-  justify-content: center;
-  align-items: center;
-}
-
-.app {
   text-align: center;
-  padding: 40px;
-  max-width: 800px;
   width: 90%;
+  max-width: 700px;
   background: rgba(255,255,255,0.08);
-  border-radius: 18px;
+  padding: 40px;
+  border-radius: 16px;
 }
 
 select, button {
-  padding: 12px 18px;
+  padding: 10px 16px;
   font-size: 16px;
   border-radius: 8px;
   border: none;
   margin: 10px;
 }
 
-button {
-  background-color: #e94560;
-  color: white;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #555;
-}
-
-#cooldown {
-  margin-top: 10px;
-  font-size: 14px;
-}
-
-.poeme {
-  margin-top: 25px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+#poeme {
+  margin-top: 30px;
   white-space: pre-line;
   font-size: 18px;
   line-height: 1.6;
@@ -116,116 +77,75 @@ button:disabled {
 
 <body>
 
-<!-- BIENVENUE -->
+<!-- ACCUEIL -->
 <div id="welcome">
-  <h1>✨ Bienvenue</h1>
-  <p>Sur le Générateur de Poèmes</p>
-  <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">
-    Créé par PePrimeTKai
-  </a>
-
-  <!-- ✅ LE BOUTON -->
-  <button onclick="startSite()">Commencer</button>
+  <h1>✨ Générateur de Poèmes</h1>
+  <p>Créé par <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">PePrimeTKai</a></p>
+  <button onclick="start()">Commencer</button>
 </div>
 
-<!-- APPLICATION -->
-<div class="container" id="container">
-  <div class="app">
-    <h2>📝 Générateur de Poèmes</h2>
+<!-- APP -->
+<div id="app">
+  <h2>Choisis un thème</h2>
 
-    <select id="theme">
-      <option value="romance">Romance</option>
-      <option value="amour">Amour</option>
-      <option value="nature">Nature</option>
-      <option value="aventure">Aventure</option>
-    </select>
-    <br>
+  <select id="theme">
+    <option value="romance">Romance</option>
+    <option value="amour">Amour</option>
+    <option value="nature">Nature</option>
+    <option value="aventure">Aventure</option>
+  </select>
+  <br>
 
-    <button id="btn" onclick="generatePoem()">Générer un poème</button>
-    <div id="cooldown"></div>
+  <button onclick="generate()">Générer un poème</button>
 
-    <div id="poemes"></div>
-  </div>
+  <div id="poeme"></div>
 </div>
 
 <script>
-function startSite() {
+/* ===== DÉMARRAGE ===== */
+function start() {
   document.getElementById("welcome").style.display = "none";
-  document.getElementById("container").style.display = "flex";
+  document.getElementById("app").style.display = "block";
 }
 
-/* ===== POÈMES ===== */
-const poems = {
-  romance: [
-    "Les silences sont doux ici.",
-    "Je reste sans réfléchir.",
-    "Le temps s’apaise.",
-    "Rien n’est forcé.",
-    "Je me sens bien."
-  ],
-  amour: [
-    "Aimer est simple.",
-    "Je te garde.",
-    "Tout est calme.",
-    "Je ressens.",
-    "Je continue."
-  ],
-  nature: [
-    "Le vent passe.",
-    "Je respire.",
-    "Tout ralentit.",
-    "Je marche.",
-    "Le monde suffit."
-  ],
-  aventure: [
-    "J’avance.",
-    "Le chemin s’ouvre.",
-    "Je bouge.",
-    "Je continue.",
-    "L’inconnu m’attend."
-  ]
+/* ===== POÈMES DYNAMIQUES (ANTI-RÉPÉTITION) ===== */
+const data = {
+  romance: {
+    a: ["Je reste là", "Je prends le temps", "Je ne force rien", "Je ressens simplement"],
+    b: ["sans attendre", "sans promesse", "sans détour", "sans bruit"],
+    c: ["parce que c’est vrai.", "parce que ça suffit.", "et c’est paisible.", "et ça me va."]
+  },
+  amour: {
+    a: ["Aimer", "Ressentir", "Être présent", "Choisir"],
+    b: ["n’est pas spectaculaire", "ne demande rien", "est silencieux", "est simple"],
+    c: ["mais c’est réel.", "et ça tient.", "et je continue.", "sans hésiter."]
+  },
+  nature: {
+    a: ["Le vent passe", "Le monde avance", "La lumière tombe", "Le silence reste"],
+    b: ["sans me presser", "sans me voir", "calmement", "lentement"],
+    c: ["et je respire.", "et tout va bien.", "et je ralentis.", "sans raison."]
+  },
+  aventure: {
+    a: ["J’avance", "Je quitte l’ancien", "Je bouge", "Je continue"],
+    b: ["sans certitude", "sans plan précis", "sans regarder derrière", "sans attendre"],
+    c: ["et le chemin suit.", "par envie.", "vers autre chose.", "quoi qu’il arrive."]
+  }
 };
 
-const COOLDOWN = 5;
-let lastClick = 0;
-let timer = null;
-
-function generatePoem() {
-  const now = Date.now();
-  if ((now - lastClick) / 1000 < COOLDOWN) return;
-  lastClick = now;
-
-  startCooldown();
-
-  const theme = document.getElementById("theme").value;
-  const list = poems[theme];
-  const poem = list[Math.floor(Math.random() * list.length)];
-
-  const div = document.createElement("div");
-  div.className = "poeme";
-  div.textContent = poem;
-  document.getElementById("poemes").prepend(div);
+function random(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function startCooldown() {
-  const btn = document.getElementById("btn");
-  const cd = document.getElementById("cooldown");
-  let time = COOLDOWN;
+function generate() {
+  const theme = document.getElementById("theme").value;
+  const t = data[theme];
 
-  btn.disabled = true;
-  cd.textContent = `⏳ Prochain poème dans ${time}s`;
+  const poem =
+    random(t.a) + "\n" +
+    random(t.b) + "\n" +
+    random(t.c);
 
-  clearInterval(timer);
-  timer = setInterval(() => {
-    time--;
-    if (time <= 0) {
-      clearInterval(timer);
-      btn.disabled = false;
-      cd.textContent = "✅ Tu peux générer un nouveau poème";
-    } else {
-      cd.textContent = `⏳ Prochain poème dans ${time}s`;
-    }
-  }, 1000);
+  document.getElementById("poeme").innerText = poem;
 }
 </script>
 

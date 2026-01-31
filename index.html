@@ -3,13 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <title>Générateur de Poèmes</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      min-height: 100vh;
       font-family: 'Georgia', serif;
-      background: linear-gradient(120deg, #1a1a2e, #16213e);
       color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Arrière-plan dynamique */
+    #background {
+      position: fixed;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: -2;
+      transition: background-image 1s ease-in-out;
+    }
+
+    /* Assombrissement pour lisibilité */
+    #background::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: -1;
+    }
+
+    .container {
       text-align: center;
       padding: 40px;
+      max-width: 750px;
+      width: 90%;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(6px);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
     h1 {
@@ -17,7 +55,7 @@
     }
 
     select, button {
-      padding: 10px 15px;
+      padding: 10px 16px;
       font-size: 16px;
       border-radius: 8px;
       border: none;
@@ -25,41 +63,57 @@
       cursor: pointer;
     }
 
+    select {
+      background: #ffffff;
+      color: #000;
+    }
+
     button {
       background-color: #e94560;
       color: white;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #ff5c77;
+      transform: scale(1.05);
     }
 
     #poeme {
       margin-top: 30px;
       padding: 25px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
       border-radius: 12px;
       white-space: pre-line;
       font-size: 18px;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
+      line-height: 1.6;
     }
   </style>
 </head>
+
 <body>
 
-  <h1>📝 Générateur de Poèmes</h1>
+  <div id="background"></div>
 
-  <label for="theme">Choisis un thème :</label><br>
-  <select id="theme">
-    <option value="romance">Romance</option>
-    <option value="amour">Amour</option>
-    <option value="nature">Nature</option>
-    <option value="aventure">Aventure</option>
-  </select>
-  <br>
-  <button onclick="genererPoeme()">Générer un poème</button>
+  <div class="container">
+    <h1>📝 Générateur de Poèmes</h1>
 
-  <div id="poeme"></div>
+    <label for="theme">Choisis un thème :</label><br>
+    <select id="theme">
+      <option value="romance">Romance</option>
+      <option value="amour">Amour</option>
+      <option value="nature">Nature</option>
+      <option value="aventure">Aventure</option>
+    </select>
+    <br>
+
+    <button onclick="generatePoem()">Générer un poème</button>
+
+    <div id="poeme"></div>
+  </div>
 
 <script>
+/* Images de fond par thème */
 const backgrounds = {
   romance: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1600&q=80",
   amour: "https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?auto=format&fit=crop&w=1600&q=80",
@@ -67,95 +121,84 @@ const backgrounds = {
   aventure: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80"
 };
 
+/* Générateur de poèmes (illimité) */
 const data = {
   romance: {
     start: [
       "Ce soir, tout semble plus lent.",
       "Il y a une douceur étrange dans l’air.",
       "Je pense à toi sans m’en rendre compte.",
-      "Les lumières sont plus chaudes ce soir.",
-      "Le silence me parle doucement."
+      "Ton souvenir revient calmement.",
+      "Le moment est simple."
     ],
     middle: [
-      "Ton sourire revient dans mes pensées.",
-      "Même l’attente a quelque chose de beau.",
-      "Je me perds dans cette sensation.",
-      "Chaque détail me rapproche de toi.",
-      "Le temps n’a plus vraiment d’importance.",
-      "Je laisse ce moment s’installer.",
-      "Ton absence est presque rassurante.",
-      "Je respire plus calmement.",
-      "Tout devient plus simple.",
-      "Je n’ai rien besoin de dire.",
-      "Je me contente de ressentir.",
-      "Je garde cette pensée intacte."
+      "Je me sens apaisé.",
+      "Je n’ai rien à prouver.",
+      "Tout paraît plus clair.",
+      "Je me laisse porter.",
+      "Même le silence est agréable.",
+      "Je reste dans cette sensation.",
+      "Je respire tranquillement.",
+      "Le temps ralentit."
     ],
     end: [
-      "Et je souris sans raison.",
-      "Comme un secret discret.",
+      "Et ça me suffit.",
       "Sans rien attendre.",
-      "Juste pour moi.",
-      "Et c’est suffisant."
+      "Juste comme ça.",
+      "Pour l’instant.",
+      "En douceur."
     ]
   },
 
   amour: {
     start: [
-      "Je n’ai pas cherché, c’est arrivé.",
-      "Ton nom traverse mes pensées.",
-      "Même de loin, je te ressens.",
-      "Il y a quelque chose de vrai entre nous.",
-      "Je me sens différent avec toi."
+      "Je n’ai pas cherché.",
+      "Ton nom me traverse l’esprit.",
+      "Je pense à toi naturellement.",
+      "Quelque chose me rapproche de toi.",
+      "Je me sens sincère."
     ],
     middle: [
-      "Je me sens en sécurité.",
-      "Je peux être moi-même.",
-      "Tu simplifies tout.",
-      "Je n’ai plus besoin de faire semblant.",
-      "Tu me comprends sans parler.",
-      "Chaque instant compte.",
+      "Je suis moi-même.",
+      "Je me sens compris.",
+      "Je n’ai pas peur.",
+      "Tout est plus simple.",
       "Je te fais confiance.",
       "Je me sens aligné.",
-      "Je me projette naturellement.",
-      "Je suis sincère.",
-      "Je n’ai pas peur.",
+      "Je me projette.",
       "Je me sens bien."
     ],
     end: [
-      "Et je ne veux pas fuir.",
-      "Parce que c’est réel.",
       "Et ça compte.",
       "Tout simplement.",
-      "Pour ce que ça devient."
+      "Sans condition.",
+      "Avec évidence.",
+      "Pour de vrai."
     ]
   },
 
   nature: {
     start: [
       "Le vent passe doucement.",
-      "La lumière glisse sur le paysage.",
-      "Le monde respire calmement.",
-      "Le silence est apaisant.",
-      "Je prends enfin le temps."
+      "La lumière touche le sol.",
+      "Le silence est présent.",
+      "L’air est frais.",
+      "Je prends le temps."
     ],
     middle: [
-      "Les arbres restent immobiles.",
-      "L’air est frais.",
-      "Tout semble à sa place.",
+      "Les arbres restent calmes.",
+      "Tout est à sa place.",
       "Rien ne presse.",
-      "Je me détends naturellement.",
-      "Chaque bruit est authentique.",
-      "Je me laisse porter.",
-      "Le moment est simple.",
-      "Je me sens ancré.",
-      "Je respire profondément.",
       "Je ralentis.",
+      "Je me détends.",
+      "Le moment est simple.",
+      "Je respire profondément.",
       "Je profite."
     ],
     end: [
       "Et je me sens bien.",
-      "Sans penser à après.",
       "Juste ici.",
+      "Sans penser à demain.",
       "En équilibre.",
       "Dans cet instant."
     ]
@@ -163,24 +206,20 @@ const data = {
 
   aventure: {
     start: [
-      "Je ne sais pas exactement où je vais.",
-      "La route s’ouvre devant moi.",
-      "L’envie de partir est plus forte.",
-      "Chaque pas compte.",
-      "Je décide d’avancer."
+      "La route s’ouvre.",
+      "Je décide d’avancer.",
+      "Le départ est clair.",
+      "L’envie de bouger est là.",
+      "Je fais le premier pas."
     ],
     middle: [
+      "Je vais de l’avant.",
       "Je découvre autre chose.",
-      "Je fais confiance au mouvement.",
-      "Je sors de ma zone de confort.",
-      "Je laisse derrière moi les doutes.",
-      "Le monde devient plus vaste.",
       "Je m’adapte.",
       "Je continue.",
-      "Je prends des risques.",
-      "Je me surprends.",
+      "Je fais confiance au chemin.",
+      "Je sors de mes habitudes.",
       "Je me sens vivant.",
-      "Je vais plus loin.",
       "Je regarde devant."
     ],
     end: [
@@ -199,7 +238,10 @@ function random(arr) {
 
 function generatePoem() {
   const theme = document.getElementById("theme").value;
-  document.body.style.backgroundImage = `url('${backgrounds[theme]}')`;
+
+  /* Changement du fond */
+  document.getElementById("background").style.backgroundImage =
+    `url('${backgrounds[theme]}')`;
 
   const p = data[theme];
   let poem = random(p.start) + "\n\n";
@@ -212,6 +254,10 @@ function generatePoem() {
   poem += "\n" + random(p.end);
   document.getElementById("poeme").innerText = poem;
 }
+
+/* Fond par défaut */
+document.getElementById("background").style.backgroundImage =
+  `url('${backgrounds.romance}')`;
 </script>
 
 </body>

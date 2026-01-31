@@ -5,303 +5,263 @@
 <title>Générateur de Poèmes</title>
 
 <style>
-/* =========================
-   BASE
-========================= */
+/* ===================== RESET ===================== */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+/* ===================== BODY ===================== */
 body {
-  margin: 0;
-  background: #0f0f14;
-  color: #f2f2f2;
-  font-family: Georgia, serif;
   min-height: 100vh;
+  font-family: Georgia, serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #f2f2f2;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* =========================
-   ÉCRANS
-========================= */
+/* ===================== SCREENS ===================== */
 .screen {
-  width: 90%;
-  max-width: 900px;
-  text-align: center;
   display: none;
+  width: 100%;
+  height: 100%;
 }
 
 .screen.active {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* =========================
-   UI
-========================= */
-h1 {
-  font-weight: normal;
+/* ===================== WELCOME ===================== */
+#welcome {
+  text-align: center;
+  animation: fadeIn 2s ease;
+}
+
+#welcome h1 {
+  font-size: 42px;
+  margin-bottom: 20px;
+}
+
+#welcome p {
+  opacity: 0.8;
   margin-bottom: 10px;
 }
 
-p {
-  opacity: 0.9;
-}
-
-a {
-  color: #e94560;
+#welcome a {
+  color: #ff6b6b;
   text-decoration: none;
 }
 
+#welcome button {
+  margin-top: 30px;
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #ff6b6b;
+  color: white;
+}
+
+/* ===================== APP ===================== */
+#app {
+  flex-direction: column;
+  width: 90%;
+  max-width: 800px;
+  background: rgba(255,255,255,0.08);
+  padding: 30px;
+  border-radius: 18px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+#app h2 {
+  margin-bottom: 15px;
+}
+
+/* ===================== CONTROLS ===================== */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
 select, button {
-  padding: 12px 18px;
-  margin: 10px;
+  padding: 10px 16px;
+  font-size: 16px;
   border-radius: 8px;
   border: none;
-  font-size: 16px;
 }
 
 button {
-  background: #e94560;
+  background: #ff6b6b;
   color: white;
   cursor: pointer;
 }
 
-button:hover {
-  background: #ff5c77;
+/* ===================== POEMS ===================== */
+#poems {
+  width: 100%;
 }
 
-/* =========================
-   POÈME
-========================= */
-#poeme {
-  margin-top: 30px;
-  padding: 25px;
-  background: rgba(255,255,255,0.08);
+.poem {
+  margin-top: 25px;
+  padding: 20px;
+  background: rgba(255,255,255,0.12);
   border-radius: 12px;
-  white-space: pre-line;
-  font-size: 18px;
-  line-height: 1.7;
+  line-height: 1.6;
+  animation: fadeIn 1s ease;
 }
 
-/* =========================
-   FOOTER
-========================= */
-footer {
-  margin-top: 30px;
-  opacity: 0.5;
+/* ===================== INFO ===================== */
+#info {
+  margin-top: 10px;
   font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ===================== ANIM ===================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-     ACCUEIL
-========================= -->
+<!-- ===================== WELCOME ===================== -->
 <div id="welcome" class="screen active">
-  <h1>✨ Générateur de Poèmes</h1>
-  <p>Bienvenue sur le générateur de poèmes.</p>
-  <p>Fait par <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">PeprimetCk</a></p>
-  <button onclick="startApp()">Commencer</button>
+  <div>
+    <h1>📝 Générateur de Poèmes</h1>
+    <p>Bienvenue sur le générateur de poèmes</p>
+    <p>Fait par <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">PeprimetCk</a></p>
+    <button onclick="startApp()">Commencer</button>
+  </div>
 </div>
 
-<!-- =========================
-     APPLICATION
-========================= -->
+<!-- ===================== APP ===================== -->
 <div id="app" class="screen">
-  <h1>📝 Génération</h1>
+  <h2>Créer un poème</h2>
 
-  <select id="theme">
-    <option value="amour">Amour</option>
-    <option value="romance">Romance</option>
-    <option value="nature">Nature</option>
-    <option value="vie">Vie</option>
-    <option value="solitude">Solitude</option>
-    <option value="liberte">Liberté</option>
-    <option value="temps">Temps</option>
-    <option value="reve">Rêve</option>
-  </select>
+  <div class="controls">
+    <select id="theme">
+      <option>Amour</option>
+      <option>Romance</option>
+      <option>Nature</option>
+      <option>Vie</option>
+      <option>Solitude</option>
+      <option>Liberté</option>
+      <option>Temps</option>
+      <option>Rêve</option>
+      <option>Espoir</option>
+      <option>Mémoire</option>
+    </select>
 
-  <select id="size">
-    <option value="short">Poème court</option>
-    <option value="long">Poème long</option>
-  </select>
+    <select id="length">
+      <option value="short">Court</option>
+      <option value="long">Long</option>
+    </select>
 
-  <br>
-  <button onclick="generatePoem()">Générer un poème</button>
+    <button onclick="generatePoem()">Générer</button>
+  </div>
 
-  <div id="poeme"></div>
-
-  <footer>
-    Générateur poétique expérimental
-  </footer>
+  <div id="info">Temps d’attente : 5 secondes entre chaque poème</div>
+  <div id="poems"></div>
 </div>
 
 <script>
-/* =========================
-   NAVIGATION
-========================= */
+/* ===================== STATE ===================== */
+let lastTime = 0;
+
+/* ===================== DATA ===================== */
+const words = {
+  subjects: [
+    "je", "on", "le cœur", "l’esprit", "le silence", "le temps",
+    "la nuit", "le jour", "l’instant", "la pensée"
+  ],
+
+  verbs: [
+    "avance", "attend", "observe", "se perd", "se souvient",
+    "respire", "continue", "doute", "s’ouvre", "s’arrête"
+  ],
+
+  complements: [
+    "sans bruit", "lentement", "sans réponse", "dans l’ombre",
+    "sans certitude", "en silence", "sans retour", "à distance"
+  ],
+
+  endings: [
+    "et tout change.",
+    "sans explication.",
+    "comme toujours.",
+    "pour un instant.",
+    "sans regret."
+  ]
+};
+
+const themes = {
+  Amour: ["cœur", "proche", "sincère", "lien", "présence"],
+  Romance: ["douceur", "regard", "moment", "partage"],
+  Nature: ["vent", "terre", "lumière", "calme"],
+  Vie: ["chemin", "choix", "sens"],
+  Solitude: ["silence", "vide", "nuit"],
+  Liberté: ["espace", "élan", "mouvement"],
+  Temps: ["minute", "passé", "attente"],
+  Rêve: ["ailleurs", "imaginaire", "possible"],
+  Espoir: ["demain", "lueur", "continuer"],
+  Mémoire: ["souvenir", "trace", "écho"]
+};
+
+/* ===================== FUNCTIONS ===================== */
+function rand(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function buildLine(themeWords) {
+  return `${rand(words.subjects)} ${rand(words.verbs)} ${rand(themeWords)} ${rand(words.complements)}`;
+}
+
+function buildPoem(theme, length) {
+  const lines = length === "short" ? 4 : 8;
+  let poem = "";
+
+  for (let i = 0; i < lines; i++) {
+    poem += buildLine(themes[theme]) + "\n";
+  }
+
+  poem += "\n" + rand(words.endings);
+  return poem;
+}
+
+/* ===================== APP ===================== */
 function startApp() {
   document.getElementById("welcome").classList.remove("active");
   document.getElementById("app").classList.add("active");
 }
 
-/* =========================
-   UTILITAIRES
-========================= */
-function randomItem(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
-
-/* =========================
-   MÉMOIRE ANTI-RÉPÉTITION
-========================= */
-let recentLines = [];
-
-function pickUnique(list) {
-  let attempts = 0;
-  let line;
-  do {
-    line = randomItem(list);
-    attempts++;
-  } while (recentLines.includes(line) && attempts < 10);
-
-  recentLines.push(line);
-  if (recentLines.length > 30) recentLines.shift();
-
-  return line;
-}
-
-/* =========================
-   DONNÉES POÉTIQUES
-========================= */
-const DATA = {
-  amour: {
-    start: [
-      "Je pense à toi",
-      "Ton souvenir reste",
-      "Ton absence parle",
-      "Ton nom revient",
-      "Quelque chose persiste"
-    ],
-    middle: [
-      "sans effort",
-      "sans bruit",
-      "dans le calme",
-      "sans explication",
-      "naturellement",
-      "lentement"
-    ],
-    action: [
-      "je continue",
-      "je m’attarde",
-      "je reste",
-      "je respire",
-      "je laisse faire"
-    ],
-    end: [
-      "et ça suffit.",
-      "sans attendre plus.",
-      "pour aujourd’hui.",
-      "sans regret.",
-      "simplement."
-    ]
-  },
-
-  nature: {
-    start: [
-      "Le vent passe",
-      "La lumière tombe",
-      "Le monde respire",
-      "Le ciel s’étend",
-      "Le sol est calme"
-    ],
-    middle: [
-      "sans urgence",
-      "dans le silence",
-      "sans tension",
-      "lentement",
-      "sans attente"
-    ],
-    action: [
-      "je marche",
-      "je regarde",
-      "je m’arrête",
-      "je me pose",
-      "je respire"
-    ],
-    end: [
-      "et je suis là.",
-      "en équilibre.",
-      "sans raison.",
-      "en paix.",
-      "simplement."
-    ]
-  },
-
-  vie: {
-    start: [
-      "La vie avance",
-      "Tout change",
-      "Rien ne reste fixe",
-      "Je continue",
-      "Le temps agit"
-    ],
-    middle: [
-      "malgré le doute",
-      "sans certitude",
-      "pas à pas",
-      "en apprenant",
-      "sans maîtrise"
-    ],
-    action: [
-      "je fais de mon mieux",
-      "je recommence",
-      "je m’adapte",
-      "je tiens",
-      "je poursuis"
-    ],
-    end: [
-      "quoi qu’il arrive.",
-      "encore.",
-      "jusqu’au bout.",
-      "sans garantie.",
-      "en avançant."
-    ]
-  }
-};
-
-/* =========================
-   GÉNÉRATION
-========================= */
 function generatePoem() {
+  const now = Date.now();
+  if (now - lastTime < 5000) return;
+  lastTime = now;
+
   const theme = document.getElementById("theme").value;
-  const size = document.getElementById("size").value;
-  const t = DATA[theme];
+  const length = document.getElementById("length").value;
 
-  let lines = [];
+  const poemText = buildPoem(theme, length);
 
-  lines.push(pickUnique(t.start));
-  lines.push(pickUnique(t.middle));
-  lines.push(pickUnique(t.action));
+  const div = document.createElement("div");
+  div.className = "poem";
+  div.innerText = poemText;
 
-  if (size === "long") {
-    lines.push(pickUnique(t.middle));
-    lines.push(pickUnique(t.action));
-    lines.push(pickUnique(t.middle));
-  }
-
-  lines.push(pickUnique(t.end));
-
-  document.getElementById("poeme").innerText =
-    shuffle(lines).join("\n");
+  document.getElementById("poems").prepend(div);
 }
 </script>
 

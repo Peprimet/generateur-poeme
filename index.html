@@ -5,79 +5,91 @@
   <title>Générateur de Poèmes</title>
   <style>
     body {
-      font-family: Georgia, serif;
-      background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+      font-family: 'Georgia', serif;
+      background: linear-gradient(120deg, #1a1a2e, #16213e);
       color: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0;
-    }
-    .container {
-      background: rgba(0,0,0,0.4);
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 500px;
       text-align: center;
+      padding: 40px;
     }
-    button {
-      margin-top: 20px;
-      padding: 10px 18px;
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    select, button {
+      padding: 10px 15px;
       font-size: 16px;
-      border: none;
       border-radius: 8px;
-      background: #e0b973;
+      border: none;
+      margin: 10px;
       cursor: pointer;
     }
-    .poem {
-      margin-top: 20px;
+
+    button {
+      background-color: #e94560;
+      color: white;
+    }
+
+    #poeme {
+      margin-top: 30px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
       white-space: pre-line;
-      font-style: italic;
+      font-size: 18px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>🖋️ Générateur de Poèmes</h1>
-  <button onclick="generatePoem()">Générer un poème</button>
-  <div id="poem" class="poem"></div>
-</div>
+  <h1>📝 Générateur de Poèmes</h1>
 
-<script>
-const beginnings = [
-  "Sous la lune pâle,",
-  "Dans le silence du matin,",
-  "Quand la nuit respire,",
-  "Au bord du monde,"
-];
+  <label for="theme">Choisis un thème :</label><br>
+  <select id="theme">
+    <option value="romance">Romance</option>
+    <option value="amour">Amour</option>
+    <option value="nature">Nature</option>
+    <option value="aventure">Aventure</option>
+  </select>
+  <br>
+  <button onclick="genererPoeme()">Générer un poème</button>
 
-const middles = [
-  "le vent murmure des secrets",
-  "les étoiles tremblent doucement",
-  "le temps s’arrête un instant",
-  "mon cœur dérive sans bruit"
-];
+  <div id="poeme"></div>
 
-const endings = [
-  "que personne n’entend.",
-  "dans l’écho de l’infini.",
-  "sous un ciel sans nom.",
-  "avant l’aube fragile."
-];
+  <script>
+    const poemes = {
+      romance: [
+        "Sous la lune douce, nos mains se cherchent,\nDeux cœurs battant au même silence,\nTon regard est mon éternité.",
+        "Tes mots dansent sur ma peau,\nComme un feu tendre et lent,\nJe me perds en toi sans peur.",
+        "Chaque nuit me murmure ton nom,\nEt l’aube rougit de jalousie."
+      ],
+      amour: [
+        "Je t’aime sans condition,\nComme la mer aime l’horizon,\nSans jamais le toucher.",
+        "Ton absence est un hiver,\nTa présence, un printemps éternel.",
+        "Aimer, c’est te choisir\nMême dans le chaos."
+      ],
+      nature: [
+        "Le vent écrit des poèmes\nSur les feuilles fatiguées,\nLa forêt écoute.",
+        "La rivière chuchote\nDes secrets anciens\nAux pierres immobiles.",
+        "Sous le ciel étoilé,\nLa Terre respire lentement."
+      ],
+      aventure: [
+        "Au-delà des montagnes,\nL’inconnu m’appelle,\nEt je réponds sans crainte.",
+        "Chaque pas est une promesse,\nChaque chemin une histoire.",
+        "Le monde est vaste,\nEt mon courage plus grand encore."
+      ]
+    };
 
-function random(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function generatePoem() {
-  document.getElementById("poem").innerText =
-`${random(beginnings)}
-${random(middles)}
-${random(endings)}`;
-}
-</script>
+    function genererPoeme() {
+      const theme = document.getElementById("theme").value;
+      const liste = poemes[theme];
+      const poeme = liste[Math.floor(Math.random() * liste.length)];
+      document.getElementById("poeme").textContent = poeme;
+    }
+  </script>
 
 </body>
 </html>

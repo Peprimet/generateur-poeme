@@ -27,24 +27,26 @@ body {
   inset: 0;
   background: #121212;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   z-index: 10;
-  animation: fadeOut 1.2s ease forwards;
-  animation-delay: 3.5s;
+  transition: opacity 1s ease;
+}
+
+#welcome.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 #welcome h1 {
   font-size: 42px;
-  margin-bottom: 15px;
-  animation: slideUp 1s ease;
+  margin-bottom: 10px;
 }
 
 #welcome p {
   font-size: 18px;
   opacity: 0.9;
-  animation: slideUp 1.4s ease;
 }
 
 #welcome a {
@@ -54,25 +56,24 @@ body {
   font-weight: bold;
 }
 
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
+#welcome button {
+  margin-top: 25px;
+  padding: 14px 28px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  background: #e94560;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(25px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+#welcome button:hover {
+  background: #ff5c77;
+  transform: scale(1.05);
 }
 
-/* ===== APP ===== */
+/* ===== APPLICATION ===== */
 .container {
   text-align: center;
   padding: 40px;
@@ -81,10 +82,14 @@ body {
   background: rgba(255,255,255,0.08);
   border-radius: 18px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
 }
 
-h2 {
-  margin-bottom: 20px;
+.container.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 select, button {
@@ -112,12 +117,8 @@ button:disabled {
   opacity: 0.8;
 }
 
-#poemes {
-  margin-top: 30px;
-}
-
 .poeme {
-  margin-bottom: 30px;
+  margin-top: 25px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(255,255,255,0.2);
   white-space: pre-line;
@@ -129,17 +130,18 @@ button:disabled {
 
 <body>
 
-<!-- ÉCRAN DE BIENVENUE -->
+<!-- BIENVENUE -->
 <div id="welcome">
   <h1>✨ Bienvenue</h1>
-  <p>Sur le Générateur de Poèmes</p>
+  <p>Générateur de Poèmes</p>
   <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">
     Créé par PePrimeTKai
   </a>
+  <button onclick="startSite()">Commencer</button>
 </div>
 
-<!-- APPLICATION -->
-<div class="container">
+<!-- APP -->
+<div class="container" id="app">
   <h2>📝 Générateur de Poèmes</h2>
 
   <select id="theme">
@@ -151,75 +153,64 @@ button:disabled {
   <br>
 
   <button id="btn" onclick="generatePoem()">Générer un poème</button>
-
   <div id="cooldown"></div>
+
   <div id="poemes"></div>
 </div>
 
 <script>
+function startSite() {
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("app").classList.add("visible");
+}
+
+/* ===== POÈMES ===== */
 const poems = {
   romance: [
-`Rien n’est pressé.
-On se comprend
-sans trop parler.`,
-`Je reste là.
-Même quand le temps passe.`,
-`Il y a cette douceur
-qui ne s’explique pas.`,
-`Je ne cherche rien de plus.`,
-`Les silences sont paisibles.`
+`Les silences sont doux ici.`,
+`Je reste sans réfléchir.`,
+`Le temps s’apaise.`,
+`Rien n’est forcé.`,
+`Je me sens bien.`
   ],
   amour: [
-`Aimer,
-c’est choisir encore.`,
-`Je pense à toi
-sans y penser.`,
-`Tout est simple.`,
-`Je te garde en moi.`,
-`C’est vrai.
-C’est calme.`
+`Aimer est simple.`,
+`Je te garde.`,
+`Tout est calme.`,
+`Je ressens.`,
+`Je continue.`
   ],
   nature: [
-`Le vent passe.
-Je respire.`,
-`Le monde ralentit.`,
-`Tout est à sa place.`,
-`Je marche sans but.`,
-`Le silence m’apaise.`
+`Le vent passe.`,
+`Je respire.`,
+`Tout ralentit.`,
+`Je marche.`,
+`Le monde suffit.`
   ],
   aventure: [
-`Je choisis d’avancer.`,
+`J’avance.`,
 `Le chemin s’ouvre.`,
-`Je quitte l’immobile.`,
-`L’inconnu m’appelle.`,
-`Je continue.`
+`Je bouge.`,
+`Je continue.`,
+`L’inconnu m’attend.`
   ]
 };
 
+/* ===== COOLDOWN ===== */
 const COOLDOWN = 5;
 let lastClick = 0;
 let interval = null;
-
-const history = { romance: [], amour: [], nature: [], aventure: [] };
-const MAX_HISTORY = 5;
 
 function generatePoem() {
   const now = Date.now();
   if ((now - lastClick) / 1000 < COOLDOWN) return;
   lastClick = now;
+
   startCooldown();
 
   const theme = document.getElementById("theme").value;
   const list = poems[theme];
-  let poem, tries = 0;
-
-  do {
-    poem = list[Math.floor(Math.random() * list.length)];
-    tries++;
-  } while (history[theme].includes(poem) && tries < 10);
-
-  history[theme].push(poem);
-  if (history[theme].length > MAX_HISTORY) history[theme].shift();
+  const poem = list[Math.floor(Math.random() * list.length)];
 
   const div = document.createElement("div");
   div.className = "poeme";

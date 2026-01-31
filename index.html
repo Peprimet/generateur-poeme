@@ -18,8 +18,61 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
+/* ===== ÉCRAN DE BIENVENUE ===== */
+#welcome {
+  position: fixed;
+  inset: 0;
+  background: #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 10;
+  animation: fadeOut 1.2s ease forwards;
+  animation-delay: 3.5s;
+}
+
+#welcome h1 {
+  font-size: 42px;
+  margin-bottom: 15px;
+  animation: slideUp 1s ease;
+}
+
+#welcome p {
+  font-size: 18px;
+  opacity: 0.9;
+  animation: slideUp 1.4s ease;
+}
+
+#welcome a {
+  margin-top: 10px;
+  color: #e94560;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(25px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== APP ===== */
 .container {
   text-align: center;
   padding: 40px;
@@ -30,7 +83,7 @@ body {
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-h1 {
+h2 {
   margin-bottom: 20px;
 }
 
@@ -40,10 +93,6 @@ select, button {
   border-radius: 8px;
   border: none;
   margin: 10px;
-}
-
-select {
-  cursor: pointer;
 }
 
 button {
@@ -58,8 +107,8 @@ button:disabled {
 }
 
 #cooldown {
-  margin-top: 10px;
   font-size: 14px;
+  margin-top: 10px;
   opacity: 0.8;
 }
 
@@ -80,8 +129,18 @@ button:disabled {
 
 <body>
 
+<!-- ÉCRAN DE BIENVENUE -->
+<div id="welcome">
+  <h1>✨ Bienvenue</h1>
+  <p>Sur le Générateur de Poèmes</p>
+  <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">
+    Créé par PePrimeTKai
+  </a>
+</div>
+
+<!-- APPLICATION -->
 <div class="container">
-  <h1>📝 Générateur de Poèmes</h1>
+  <h2>📝 Générateur de Poèmes</h2>
 
   <select id="theme">
     <option value="romance">Romance</option>
@@ -94,176 +153,97 @@ button:disabled {
   <button id="btn" onclick="generatePoem()">Générer un poème</button>
 
   <div id="cooldown"></div>
-
   <div id="poemes"></div>
 </div>
 
 <script>
-/* ===============================
-   BANQUE DE POÈMES
-   =============================== */
-
 const poems = {
   romance: [
 `Rien n’est pressé.
 On se comprend
 sans trop parler.`,
-
-`Il y a une douceur
-qui reste
-quand tout s’arrête.`,
-
-`Je ne cherche pas plus.
-Ce moment suffit.`,
-
-`Les silences
-ne sont plus vides.`,
-
 `Je reste là.
-C’est déjà beaucoup.`,
-
-`Tout devient simple
-quand tu es là.`,
-
-`Je n’explique rien.
-Je ressens.`,
+Même quand le temps passe.`,
+`Il y a cette douceur
+qui ne s’explique pas.`,
+`Je ne cherche rien de plus.`,
+`Les silences sont paisibles.`
   ],
-
   amour: [
 `Aimer,
-c’est rester
-quand on pourrait partir.`,
-
+c’est choisir encore.`,
 `Je pense à toi
-sans raison précise.`,
-
-`Rien n’est spectaculaire.
-Tout est sincère.`,
-
-`Je te choisis
-sans réfléchir.`,
-
-`Je garde ce lien
-en moi.`,
-
-`C’est calme.
-C’est vrai.`,
-
-`Je suis là.
-Encore.`,
+sans y penser.`,
+`Tout est simple.`,
+`Je te garde en moi.`,
+`C’est vrai.
+C’est calme.`
   ],
-
   nature: [
 `Le vent passe.
-Je l’écoute.`,
-
-`Le monde continue
-sans me presser.`,
-
-`Le silence
-fait du bien.`,
-
-`Je marche
-sans destination.`,
-
-`Tout respire ici.`,
-
-`Rien n’attend.
-Tout existe.`,
-
-`Je prends le temps.`,
+Je respire.`,
+`Le monde ralentit.`,
+`Tout est à sa place.`,
+`Je marche sans but.`,
+`Le silence m’apaise.`
   ],
-
   aventure: [
-`Je ne sais pas
-où je vais.`,
-
-`Avancer suffit.`,
-
-`Le chemin se crée
-en marchant.`,
-
-`Je quitte le connu.`,
-
-`Je continue
-par envie.`,
-
-`L’inconnu m’attire.`,
-
-`Je choisis le mouvement.`,
+`Je choisis d’avancer.`,
+`Le chemin s’ouvre.`,
+`Je quitte l’immobile.`,
+`L’inconnu m’appelle.`,
+`Je continue.`
   ]
 };
-
-/* ===============================
-   LOGIQUE COOLDOWN
-   =============================== */
 
 const COOLDOWN = 5;
 let lastClick = 0;
 let interval = null;
 
-// historique anti-répétition
-const history = {
-  romance: [],
-  amour: [],
-  nature: [],
-  aventure: []
-};
-
+const history = { romance: [], amour: [], nature: [], aventure: [] };
 const MAX_HISTORY = 5;
 
 function generatePoem() {
   const now = Date.now();
   if ((now - lastClick) / 1000 < COOLDOWN) return;
-
   lastClick = now;
   startCooldown();
 
   const theme = document.getElementById("theme").value;
   const list = poems[theme];
-
-  let poem;
-  let attempts = 0;
+  let poem, tries = 0;
 
   do {
     poem = list[Math.floor(Math.random() * list.length)];
-    attempts++;
-  } while (history[theme].includes(poem) && attempts < 10);
+    tries++;
+  } while (history[theme].includes(poem) && tries < 10);
 
   history[theme].push(poem);
-  if (history[theme].length > MAX_HISTORY) {
-    history[theme].shift();
-  }
+  if (history[theme].length > MAX_HISTORY) history[theme].shift();
 
   const div = document.createElement("div");
   div.className = "poeme";
   div.textContent = poem;
-
   document.getElementById("poemes").prepend(div);
 }
-
-/* ===============================
-   COMPTE À REBOURS VISUEL
-   =============================== */
 
 function startCooldown() {
   const btn = document.getElementById("btn");
   const cd = document.getElementById("cooldown");
-  let remaining = COOLDOWN;
+  let time = COOLDOWN;
 
   btn.disabled = true;
-  cd.textContent = `⏳ Prochain poème dans ${remaining}s`;
+  cd.textContent = `⏳ Prochain poème dans ${time}s`;
 
   clearInterval(interval);
   interval = setInterval(() => {
-    remaining--;
-
-    if (remaining <= 0) {
+    time--;
+    if (time <= 0) {
       clearInterval(interval);
       btn.disabled = false;
       cd.textContent = "✅ Tu peux générer un nouveau poème";
     } else {
-      cd.textContent = `⏳ Prochain poème dans ${remaining}s`;
+      cd.textContent = `⏳ Prochain poème dans ${time}s`;
     }
   }, 1000);
 }

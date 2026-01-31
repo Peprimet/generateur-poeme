@@ -5,31 +5,61 @@
 <title>Générateur de Poèmes</title>
 
 <style>
+/* =========================
+   BASE
+========================= */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
+  background: #0f0f14;
+  color: #f2f2f2;
   font-family: Georgia, serif;
-  background: #111;
-  color: #eee;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#welcome, #app {
-  max-width: 900px;
+/* =========================
+   ÉCRANS
+========================= */
+.screen {
   width: 90%;
+  max-width: 900px;
   text-align: center;
+  display: none;
 }
 
-#app { display: none; }
+.screen.active {
+  display: block;
+}
 
-button, select {
+/* =========================
+   UI
+========================= */
+h1 {
+  font-weight: normal;
+  margin-bottom: 10px;
+}
+
+p {
+  opacity: 0.9;
+}
+
+a {
+  color: #e94560;
+  text-decoration: none;
+}
+
+select, button {
   padding: 12px 18px;
   margin: 10px;
-  font-size: 16px;
   border-radius: 8px;
   border: none;
+  font-size: 16px;
 }
 
 button {
@@ -38,254 +68,240 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background: #ff5c77;
+}
+
+/* =========================
+   POÈME
+========================= */
 #poeme {
   margin-top: 30px;
+  padding: 25px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
   white-space: pre-line;
   font-size: 18px;
   line-height: 1.7;
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+  margin-top: 30px;
+  opacity: 0.5;
+  font-size: 14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== ACCUEIL ===== -->
-<div id="welcome">
+<!-- =========================
+     ACCUEIL
+========================= -->
+<div id="welcome" class="screen active">
   <h1>✨ Générateur de Poèmes</h1>
-  <p>Fait par <a href="https://www.youtube.com/@PePrimeTKai" target="_blank" style="color:#e94560;">PeprimetCk</a></p>
-  <button onclick="start()">Commencer</button>
+  <p>Bienvenue sur le générateur de poèmes.</p>
+  <p>Fait par <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">PeprimetCk</a></p>
+  <button onclick="startApp()">Commencer</button>
 </div>
 
-<!-- ===== APP ===== -->
-<div id="app">
-  <h2>Choisis un thème</h2>
+<!-- =========================
+     APPLICATION
+========================= -->
+<div id="app" class="screen">
+  <h1>📝 Génération</h1>
 
   <select id="theme">
-    <option value="romance">Romance</option>
     <option value="amour">Amour</option>
+    <option value="romance">Romance</option>
     <option value="nature">Nature</option>
-    <option value="aventure">Aventure</option>
+    <option value="vie">Vie</option>
+    <option value="solitude">Solitude</option>
+    <option value="liberte">Liberté</option>
+    <option value="temps">Temps</option>
+    <option value="reve">Rêve</option>
   </select>
 
-  <select id="length">
+  <select id="size">
     <option value="short">Poème court</option>
     <option value="long">Poème long</option>
   </select>
 
   <br>
-  <button onclick="generate()">Générer le poème</button>
+  <button onclick="generatePoem()">Générer un poème</button>
 
   <div id="poeme"></div>
+
+  <footer>
+    Générateur poétique expérimental
+  </footer>
 </div>
 
 <script>
-/* =============================
-   DÉMARRAGE
-============================= */
-const welcome = document.getElementById("welcome");
-const app = document.getElementById("app");
-const poemeDiv = document.getElementById("poeme");
-
-function start() {
-  welcome.style.display = "none";
-  app.style.display = "block";
+/* =========================
+   NAVIGATION
+========================= */
+function startApp() {
+  document.getElementById("welcome").classList.remove("active");
+  document.getElementById("app").classList.add("active");
 }
 
-/* =============================
-   UTILITAIRE
-============================= */
-function r(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+/* =========================
+   UTILITAIRES
+========================= */
+function randomItem(array) {
+  return array[Math.floor(Math.random() * array.length)];
 }
 
-/* =============================
-   BANQUE POÉTIQUE (~400 lignes)
-============================= */
-const data = {
-
-romance: {
-intro: [
-"Je reste là",
-"Je prends le temps",
-"Je ne force rien",
-"Je ressens simplement",
-"Je laisse venir",
-"Je me pose ici",
-"Je regarde sans attendre",
-"Je m’arrête un instant",
-"Je ne fuis plus",
-"Je choisis la douceur"
-],
-middle: [
-"dans le calme",
-"sans promesse",
-"sans détour",
-"sans bruit",
-"dans cette lenteur",
-"avec patience",
-"sans chercher plus",
-"au rythme du silence",
-"dans un espace sûr",
-"avec sincérité"
-],
-end: [
-"et ça suffit.",
-"et je continue.",
-"parce que c’est vrai.",
-"sans rien prouver.",
-"et je respire.",
-"tout simplement.",
-"sans regret.",
-"ici et maintenant.",
-"sans attente.",
-"et je reste."
-]
-},
-
-amour: {
-intro: [
-"Aimer",
-"Ressentir",
-"Être présent",
-"Choisir",
-"Accueillir",
-"Donner",
-"Partager",
-"Se tenir là",
-"Rester ouvert",
-"Faire confiance"
-],
-middle: [
-"n’est pas spectaculaire",
-"ne demande rien",
-"est silencieux",
-"est simple",
-"est stable",
-"est discret",
-"se construit lentement",
-"prend du temps",
-"ne force rien",
-"existe sans bruit"
-],
-end: [
-"mais c’est réel.",
-"et ça tient.",
-"sans condition.",
-"sans détour.",
-"avec constance.",
-"dans la durée.",
-"malgré tout.",
-"et j’y crois.",
-"sans hésiter.",
-"et j’avance."
-]
-},
-
-nature: {
-intro: [
-"Le vent passe",
-"La lumière tombe",
-"Le monde avance",
-"Le silence reste",
-"La terre respire",
-"Les feuilles bougent",
-"L’air circule",
-"Le ciel s’étend",
-"La pluie arrive",
-"La nuit s’installe"
-],
-middle: [
-"lentement",
-"sans me presser",
-"calmement",
-"sans effort",
-"naturellement",
-"sans intention",
-"avec régularité",
-"en douceur",
-"sans me voir",
-"sans attente"
-],
-end: [
-"et je respire.",
-"et tout va bien.",
-"sans raison.",
-"juste ici.",
-"dans l’instant.",
-"sans urgence.",
-"en équilibre.",
-"et je ralentis.",
-"sans pensée.",
-"dans le présent."
-]
-},
-
-aventure: {
-intro: [
-"J’avance",
-"Je pars",
-"Je quitte l’ancien",
-"Je bouge",
-"Je franchis un pas",
-"Je me lance",
-"Je choisis le mouvement",
-"Je regarde devant",
-"Je continue",
-"Je change"
-],
-middle: [
-"sans plan précis",
-"sans certitude",
-"sans regarder derrière",
-"par instinct",
-"avec curiosité",
-"sans garantie",
-"avec courage",
-"malgré le doute",
-"hors de ma zone",
-"avec l’envie"
-],
-end: [
-"et le chemin suit.",
-"quoi qu’il arrive.",
-"vers autre chose.",
-"et je continue.",
-"sans retour.",
-"pas à pas.",
-"librement.",
-"avec confiance.",
-"sans regret.",
-"et j’y vais."
-]
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
 }
 
+/* =========================
+   MÉMOIRE ANTI-RÉPÉTITION
+========================= */
+let recentLines = [];
+
+function pickUnique(list) {
+  let attempts = 0;
+  let line;
+  do {
+    line = randomItem(list);
+    attempts++;
+  } while (recentLines.includes(line) && attempts < 10);
+
+  recentLines.push(line);
+  if (recentLines.length > 30) recentLines.shift();
+
+  return line;
+}
+
+/* =========================
+   DONNÉES POÉTIQUES
+========================= */
+const DATA = {
+  amour: {
+    start: [
+      "Je pense à toi",
+      "Ton souvenir reste",
+      "Ton absence parle",
+      "Ton nom revient",
+      "Quelque chose persiste"
+    ],
+    middle: [
+      "sans effort",
+      "sans bruit",
+      "dans le calme",
+      "sans explication",
+      "naturellement",
+      "lentement"
+    ],
+    action: [
+      "je continue",
+      "je m’attarde",
+      "je reste",
+      "je respire",
+      "je laisse faire"
+    ],
+    end: [
+      "et ça suffit.",
+      "sans attendre plus.",
+      "pour aujourd’hui.",
+      "sans regret.",
+      "simplement."
+    ]
+  },
+
+  nature: {
+    start: [
+      "Le vent passe",
+      "La lumière tombe",
+      "Le monde respire",
+      "Le ciel s’étend",
+      "Le sol est calme"
+    ],
+    middle: [
+      "sans urgence",
+      "dans le silence",
+      "sans tension",
+      "lentement",
+      "sans attente"
+    ],
+    action: [
+      "je marche",
+      "je regarde",
+      "je m’arrête",
+      "je me pose",
+      "je respire"
+    ],
+    end: [
+      "et je suis là.",
+      "en équilibre.",
+      "sans raison.",
+      "en paix.",
+      "simplement."
+    ]
+  },
+
+  vie: {
+    start: [
+      "La vie avance",
+      "Tout change",
+      "Rien ne reste fixe",
+      "Je continue",
+      "Le temps agit"
+    ],
+    middle: [
+      "malgré le doute",
+      "sans certitude",
+      "pas à pas",
+      "en apprenant",
+      "sans maîtrise"
+    ],
+    action: [
+      "je fais de mon mieux",
+      "je recommence",
+      "je m’adapte",
+      "je tiens",
+      "je poursuis"
+    ],
+    end: [
+      "quoi qu’il arrive.",
+      "encore.",
+      "jusqu’au bout.",
+      "sans garantie.",
+      "en avançant."
+    ]
+  }
 };
 
-/* =============================
+/* =========================
    GÉNÉRATION
-============================= */
-function generate() {
+========================= */
+function generatePoem() {
   const theme = document.getElementById("theme").value;
-  const length = document.getElementById("length").value;
-  const t = data[theme];
+  const size = document.getElementById("size").value;
+  const t = DATA[theme];
 
-  let poem = "";
+  let lines = [];
 
-  if (length === "short") {
-    poem =
-      r(t.intro) + "\n" +
-      r(t.middle) + "\n" +
-      r(t.end);
-  } else {
-    poem =
-      r(t.intro) + "\n" +
-      r(t.middle) + "\n" +
-      r(t.middle) + "\n" +
-      r(t.middle) + "\n" +
-      r(t.end);
+  lines.push(pickUnique(t.start));
+  lines.push(pickUnique(t.middle));
+  lines.push(pickUnique(t.action));
+
+  if (size === "long") {
+    lines.push(pickUnique(t.middle));
+    lines.push(pickUnique(t.action));
+    lines.push(pickUnique(t.middle));
   }
 
-  poemeDiv.innerText = poem;
+  lines.push(pickUnique(t.end));
+
+  document.getElementById("poeme").innerText =
+    shuffle(lines).join("\n");
 }
 </script>
 

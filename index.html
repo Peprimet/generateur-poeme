@@ -15,10 +15,6 @@ body {
   font-family: Georgia, serif;
   background: #121212;
   color: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
 }
 
 /* ===== ÉCRAN DE BIENVENUE ===== */
@@ -30,13 +26,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
   z-index: 10;
-  transition: opacity 1s ease;
-}
-
-#welcome.hidden {
-  opacity: 0;
-  pointer-events: none;
 }
 
 #welcome h1 {
@@ -46,50 +37,47 @@ body {
 
 #welcome p {
   font-size: 18px;
+  margin-bottom: 15px;
   opacity: 0.9;
 }
 
 #welcome a {
-  margin-top: 10px;
   color: #e94560;
   text-decoration: none;
   font-weight: bold;
+  margin-bottom: 25px;
 }
 
+/* 🔴 BOUTON COMMENCER */
 #welcome button {
-  margin-top: 25px;
-  padding: 14px 28px;
-  font-size: 18px;
-  border-radius: 10px;
+  padding: 15px 35px;
+  font-size: 20px;
+  border-radius: 12px;
   border: none;
   background: #e94560;
   color: white;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 #welcome button:hover {
   background: #ff5c77;
-  transform: scale(1.05);
 }
 
 /* ===== APPLICATION ===== */
 .container {
+  display: none;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.app {
   text-align: center;
   padding: 40px;
   max-width: 800px;
   width: 90%;
   background: rgba(255,255,255,0.08);
   border-radius: 18px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s ease, transform 1s ease;
-}
-
-.container.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 select, button {
@@ -108,13 +96,11 @@ button {
 
 button:disabled {
   background-color: #555;
-  cursor: not-allowed;
 }
 
 #cooldown {
-  font-size: 14px;
   margin-top: 10px;
-  opacity: 0.8;
+  font-size: 14px;
 }
 
 .poeme {
@@ -133,73 +119,76 @@ button:disabled {
 <!-- BIENVENUE -->
 <div id="welcome">
   <h1>✨ Bienvenue</h1>
-  <p>Générateur de Poèmes</p>
+  <p>Sur le Générateur de Poèmes</p>
   <a href="https://www.youtube.com/@PePrimeTKai" target="_blank">
     Créé par PePrimeTKai
   </a>
+
+  <!-- ✅ LE BOUTON -->
   <button onclick="startSite()">Commencer</button>
 </div>
 
-<!-- APP -->
-<div class="container" id="app">
-  <h2>📝 Générateur de Poèmes</h2>
+<!-- APPLICATION -->
+<div class="container" id="container">
+  <div class="app">
+    <h2>📝 Générateur de Poèmes</h2>
 
-  <select id="theme">
-    <option value="romance">Romance</option>
-    <option value="amour">Amour</option>
-    <option value="nature">Nature</option>
-    <option value="aventure">Aventure</option>
-  </select>
-  <br>
+    <select id="theme">
+      <option value="romance">Romance</option>
+      <option value="amour">Amour</option>
+      <option value="nature">Nature</option>
+      <option value="aventure">Aventure</option>
+    </select>
+    <br>
 
-  <button id="btn" onclick="generatePoem()">Générer un poème</button>
-  <div id="cooldown"></div>
+    <button id="btn" onclick="generatePoem()">Générer un poème</button>
+    <div id="cooldown"></div>
 
-  <div id="poemes"></div>
+    <div id="poemes"></div>
+  </div>
 </div>
 
 <script>
 function startSite() {
-  document.getElementById("welcome").classList.add("hidden");
-  document.getElementById("app").classList.add("visible");
+  document.getElementById("welcome").style.display = "none";
+  document.getElementById("container").style.display = "flex";
 }
 
 /* ===== POÈMES ===== */
 const poems = {
   romance: [
-`Les silences sont doux ici.`,
-`Je reste sans réfléchir.`,
-`Le temps s’apaise.`,
-`Rien n’est forcé.`,
-`Je me sens bien.`
+    "Les silences sont doux ici.",
+    "Je reste sans réfléchir.",
+    "Le temps s’apaise.",
+    "Rien n’est forcé.",
+    "Je me sens bien."
   ],
   amour: [
-`Aimer est simple.`,
-`Je te garde.`,
-`Tout est calme.`,
-`Je ressens.`,
-`Je continue.`
+    "Aimer est simple.",
+    "Je te garde.",
+    "Tout est calme.",
+    "Je ressens.",
+    "Je continue."
   ],
   nature: [
-`Le vent passe.`,
-`Je respire.`,
-`Tout ralentit.`,
-`Je marche.`,
-`Le monde suffit.`
+    "Le vent passe.",
+    "Je respire.",
+    "Tout ralentit.",
+    "Je marche.",
+    "Le monde suffit."
   ],
   aventure: [
-`J’avance.`,
-`Le chemin s’ouvre.`,
-`Je bouge.`,
-`Je continue.`,
-`L’inconnu m’attend.`
+    "J’avance.",
+    "Le chemin s’ouvre.",
+    "Je bouge.",
+    "Je continue.",
+    "L’inconnu m’attend."
   ]
 };
 
-/* ===== COOLDOWN ===== */
 const COOLDOWN = 5;
 let lastClick = 0;
-let interval = null;
+let timer = null;
 
 function generatePoem() {
   const now = Date.now();
@@ -226,11 +215,11 @@ function startCooldown() {
   btn.disabled = true;
   cd.textContent = `⏳ Prochain poème dans ${time}s`;
 
-  clearInterval(interval);
-  interval = setInterval(() => {
+  clearInterval(timer);
+  timer = setInterval(() => {
     time--;
     if (time <= 0) {
-      clearInterval(interval);
+      clearInterval(timer);
       btn.disabled = false;
       cd.textContent = "✅ Tu peux générer un nouveau poème";
     } else {

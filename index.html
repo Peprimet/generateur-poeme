@@ -113,151 +113,123 @@
   </div>
 
 <script>
-/* Images de fond par thème */
-const backgrounds = {
-  romance: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1600&q=80",
-  amour: "https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?auto=format&fit=crop&w=1600&q=80",
-  nature: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80",
-  aventure: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80"
+const poems = {
+  romance: [
+`Je ne sais pas quand j’ai commencé à attendre ces moments.
+Mais ils sont devenus importants.
+Sans bruit,
+sans mise en scène.`,
+
+`Il n’y a rien de compliqué entre nous.
+Juste une présence.
+Et parfois,
+c’est déjà beaucoup.`,
+
+`Je n’ai pas besoin de mots précis.
+Je ressens simplement que
+certaines choses
+méritent d’être gardées.`,
+
+`Le temps passe différemment.
+Je ne le retiens pas.
+Je le vis,
+tout simplement.`,
+
+`Je ne cherche rien de plus.
+Ce qui est là
+me suffit pour aujourd’hui.`
+  ],
+
+  amour: [
+`Je pense à toi sans effort.
+Comme une pensée familière.
+Ni lourde,
+ni envahissante.`,
+
+`Aimer n’est pas spectaculaire.
+C’est calme.
+C’est stable.
+C’est réel.`,
+
+`Je ne pose plus de questions.
+Je ressens.
+Et je laisse faire.`,
+
+`Il n’y a rien à prouver.
+Juste être là.
+Et continuer.`,
+
+`Je garde cette sensation.
+Même quand tout le reste
+devient flou.`
+  ],
+
+  nature: [
+`Le monde continue
+sans me demander mon avis.
+Et c’est reposant.`,
+
+`Je marche sans destination.
+Le paysage s’en charge.
+Je suis juste présent.`,
+
+`Le silence n’est pas vide.
+Il est plein de choses simples.
+Et ça suffit.`,
+
+`Le vent ne promet rien.
+Il passe.
+Et je le laisse passer.`,
+
+`Je respire mieux ici.
+Sans raison particulière.
+Juste parce que.`,
+
+`Rien ne presse.
+Et pour une fois,
+je l’accepte.`
+  ],
+
+  aventure: [
+`Je ne sais pas exactement où je vais.
+Mais rester immobile
+n’est plus une option.`,
+
+`Chaque pas m’éloigne
+de ce que je connais.
+Et c’est très bien comme ça.`,
+
+`Je fais confiance au mouvement.
+Même sans comprendre la suite.`,
+
+`L’inconnu n’est plus un mur.
+C’est une porte entrouverte.`,
+
+`Je continue.
+Même sans certitude.
+Surtout sans certitude.`,
+
+`Je choisis d’avancer.
+Le reste viendra plus tard.`
+  ]
 };
-
-/* Générateur de poèmes (illimité) */
-const data = {
-  romance: {
-    start: [
-      "Ce soir, tout semble plus lent.",
-      "Il y a une douceur étrange dans l’air.",
-      "Je pense à toi sans m’en rendre compte.",
-      "Ton souvenir revient calmement.",
-      "Le moment est simple."
-    ],
-    middle: [
-      "Je me sens apaisé.",
-      "Je n’ai rien à prouver.",
-      "Tout paraît plus clair.",
-      "Je me laisse porter.",
-      "Même le silence est agréable.",
-      "Je reste dans cette sensation.",
-      "Je respire tranquillement.",
-      "Le temps ralentit."
-    ],
-    end: [
-      "Et ça me suffit.",
-      "Sans rien attendre.",
-      "Juste comme ça.",
-      "Pour l’instant.",
-      "En douceur."
-    ]
-  },
-
-  amour: {
-    start: [
-      "Je n’ai pas cherché.",
-      "Ton nom me traverse l’esprit.",
-      "Je pense à toi naturellement.",
-      "Quelque chose me rapproche de toi.",
-      "Je me sens sincère."
-    ],
-    middle: [
-      "Je suis moi-même.",
-      "Je me sens compris.",
-      "Je n’ai pas peur.",
-      "Tout est plus simple.",
-      "Je te fais confiance.",
-      "Je me sens aligné.",
-      "Je me projette.",
-      "Je me sens bien."
-    ],
-    end: [
-      "Et ça compte.",
-      "Tout simplement.",
-      "Sans condition.",
-      "Avec évidence.",
-      "Pour de vrai."
-    ]
-  },
-
-  nature: {
-    start: [
-      "Le vent passe doucement.",
-      "La lumière touche le sol.",
-      "Le silence est présent.",
-      "L’air est frais.",
-      "Je prends le temps."
-    ],
-    middle: [
-      "Les arbres restent calmes.",
-      "Tout est à sa place.",
-      "Rien ne presse.",
-      "Je ralentis.",
-      "Je me détends.",
-      "Le moment est simple.",
-      "Je respire profondément.",
-      "Je profite."
-    ],
-    end: [
-      "Et je me sens bien.",
-      "Juste ici.",
-      "Sans penser à demain.",
-      "En équilibre.",
-      "Dans cet instant."
-    ]
-  },
-
-  aventure: {
-    start: [
-      "La route s’ouvre.",
-      "Je décide d’avancer.",
-      "Le départ est clair.",
-      "L’envie de bouger est là.",
-      "Je fais le premier pas."
-    ],
-    middle: [
-      "Je vais de l’avant.",
-      "Je découvre autre chose.",
-      "Je m’adapte.",
-      "Je continue.",
-      "Je fais confiance au chemin.",
-      "Je sors de mes habitudes.",
-      "Je me sens vivant.",
-      "Je regarde devant."
-    ],
-    end: [
-      "Et l’histoire continue.",
-      "Sans regret.",
-      "Avec curiosité.",
-      "Libre.",
-      "Prêt pour la suite."
-    ]
-  }
-};
-
-function random(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
 
 function generatePoem() {
   const theme = document.getElementById("theme").value;
+  const list = poems[theme];
 
-  /* Changement du fond */
-  document.getElementById("background").style.backgroundImage =
-    `url('${backgrounds[theme]}')`;
+  const poem = list[Math.floor(Math.random() * list.length)];
 
-  const p = data[theme];
-  let poem = random(p.start) + "\n\n";
+  const container = document.getElementById("poeme");
+  const bloc = document.createElement("div");
 
-  const lines = Math.floor(Math.random() * 4) + 3;
-  for (let i = 0; i < lines; i++) {
-    poem += random(p.middle) + "\n";
-  }
+  bloc.style.marginBottom = "30px";
+  bloc.style.paddingBottom = "20px";
+  bloc.style.borderBottom = "1px solid rgba(255,255,255,0.2)";
+  bloc.innerText = poem;
 
-  poem += "\n" + random(p.end);
-  document.getElementById("poeme").innerText = poem;
+  container.prepend(bloc);
 }
-
-/* Fond par défaut */
-document.getElementById("background").style.backgroundImage =
-  `url('${backgrounds.romance}')`;
 </script>
 
 </body>

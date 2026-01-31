@@ -114,164 +114,171 @@
 
 <script>
 /* =========================
-   BANQUE DE TEXTES (VARIÉE)
+   BANQUE DE POÈMES (ÉLARGIE)
    ========================= */
 
-const data = {
-  romance: {
-    intro: [
-      "Je ne sais pas quand tout a changé.",
-      "Sans prévenir, quelque chose s’est installé.",
-      "Je n’ai rien cherché, pourtant c’est là.",
-      "Avec le temps, certaines présences comptent.",
-      "Il y a des moments qui restent."
-    ],
-    body: [
-      "Tout devient plus calme.",
-      "Je me sens à l’aise.",
-      "Le silence n’est plus lourd.",
-      "Je n’ai rien à prouver.",
-      "Les gestes sont simples.",
-      "Je laisse faire.",
-      "Je respire différemment.",
-      "Rien n’est forcé."
-    ],
-    outro: [
-      "Et ça me suffit.",
-      "Sans promesse.",
-      "Pour l’instant.",
-      "Sans chercher plus loin.",
-      "En toute simplicité."
-    ]
-  },
+const poems = {
+  romance: [
+`Je ne sais pas quand tout a ralenti.
+Mais certaines présences
+changent la façon
+dont le temps passe.`,
 
-  amour: {
-    intro: [
-      "Je pense à toi sans y réfléchir.",
-      "Ton souvenir revient doucement.",
-      "C’est devenu naturel.",
-      "Je n’essaie plus de comprendre.",
-      "Il y a une évidence tranquille."
-    ],
-    body: [
-      "Je me sens sincère.",
-      "Je ne joue aucun rôle.",
-      "Tout paraît plus clair.",
-      "Je fais confiance.",
-      "Je reste moi-même.",
-      "Je n’ai pas peur.",
-      "Je me sens stable.",
-      "Je m’ouvre sans effort."
-    ],
-    outro: [
-      "Et c’est réel.",
-      "Sans condition.",
-      "Sans excès.",
-      "Avec honnêteté.",
-      "Tout simplement."
-    ]
-  },
+`Il n’y a rien d’exagéré ici.
+Juste une douceur stable
+qui s’installe
+sans prévenir.`,
 
-  nature: {
-    intro: [
-      "Le monde continue sans moi.",
-      "La lumière touche le sol.",
-      "Le vent traverse l’espace.",
-      "Le paysage s’étend.",
-      "Le silence s’installe."
-    ],
-    body: [
-      "Je ralentis.",
-      "Je regarde autour de moi.",
-      "Je respire profondément.",
-      "Rien ne presse.",
-      "Tout est à sa place.",
-      "Je me laisse porter.",
-      "Je me sens ancré.",
-      "Je me détends."
-    ],
-    outro: [
-      "Et je me sens bien.",
-      "Sans penser à demain.",
-      "Juste ici.",
-      "Dans cet instant.",
-      "Sans attente."
-    ]
-  },
+`Je n’attends rien de particulier.
+Je suis simplement là,
+dans ce moment
+qui compte.`,
 
-  aventure: {
-    intro: [
-      "Je ne sais pas exactement où je vais.",
-      "La route commence ici.",
-      "Je décide d’avancer.",
-      "Quelque chose m’appelle.",
-      "Le départ est clair."
-    ],
-    body: [
-      "Je fais un pas de plus.",
-      "Je sors de mes habitudes.",
-      "Je m’adapte.",
-      "Je continue.",
-      "Je prends le risque.",
-      "Je découvre autre chose.",
-      "Je vais plus loin.",
-      "Je fais confiance au mouvement."
-    ],
-    outro: [
-      "Et l’histoire continue.",
-      "Sans regret.",
-      "Avec curiosité.",
-      "Libre.",
-      "Prêt pour la suite."
-    ]
-  }
+`Certains instants restent.
+Même quand le reste disparaît.
+Sans bruit.
+Sans effort.`,
+
+`Je remarque les détails.
+Les silences.
+Les choses simples
+qui font du bien.`,
+
+`Je ne cherche pas à comprendre.
+Je laisse faire.
+Et ça suffit
+pour aujourd’hui.`,
+
+`Tout semble plus calme.
+Comme si le monde
+avait ralenti
+juste un peu.`,
+
+`Je n’ai rien à prouver.
+Je reste.
+Et c’est déjà beaucoup.`
+  ],
+
+  amour: [
+`Je pense à toi sans raison précise.
+C’est devenu naturel,
+presque évident.`,
+
+`Aimer n’a rien de spectaculaire.
+C’est stable.
+Présent.
+Sincère.`,
+
+`Je ne pose plus de questions.
+Je ressens,
+et je respecte
+ce que ça devient.`,
+
+`Il n’y a rien à défendre.
+Rien à expliquer.
+Juste continuer
+dans ce sens.`,
+
+`Je garde cette sensation,
+même quand tout change autour.`,
+
+`Je fais confiance à ce lien.
+Pas parce qu’il est parfait,
+mais parce qu’il est vrai.`,
+
+`Certaines choses existent
+sans avoir besoin de mots.`,
+
+`Je ne cours plus.
+Je reste.
+Et c’est un choix.`
+  ],
+
+  nature: [
+`Le monde avance
+sans m’attendre.
+Et c’est apaisant.`,
+
+`Je marche sans objectif.
+Le paysage décide
+pour moi.`,
+
+`Le silence n’est jamais vide.
+Il contient
+tout ce qui est simple.`,
+
+`Le vent passe.
+Je ne cherche pas
+à le retenir.`,
+
+`Rien ne presse ici.
+Même mes pensées
+se calment.`,
+
+`Je prends le temps
+de ne rien faire.
+Et ça suffit.`,
+
+`Le ciel ne promet rien.
+Mais il apaise
+quand même.`,
+
+`Je me sens à ma place.
+Sans raison particulière.
+Juste ici.`
+  ],
+
+  aventure: [
+`Je ne sais pas exactement
+où je vais.
+Mais rester immobile
+n’est plus une option.`,
+
+`Chaque pas m’éloigne
+de ce que je connais.
+Et ça me va.`,
+
+`Je fais confiance
+au mouvement,
+même sans plan.`,
+
+`L’inconnu n’est plus un mur.
+C’est une direction
+possible.`,
+
+`Je continue.
+Pas par certitude.
+Par envie.`,
+
+`Je laisse derrière moi
+ce qui pèse
+et j’avance.`,
+
+`Je choisis d’essayer.
+Même sans garantie.`,
+
+`Le chemin se crée
+au moment où
+je marche.`
+  ]
 };
 
 /* =========================
-   ANTI-RÉPÉTITION & COOLDOWN
+   COOLDOWN & ANTI-RÉPÉTITION
    ========================= */
 
-const COOLDOWN = 5000;
+const COOLDOWN = 5000; // 5 secondes
 let lastTime = 0;
 
+// mémorise les derniers poèmes par thème
 const history = {
   romance: [],
   amour: [],
   nature: [],
   aventure: []
 };
-const MAX_HISTORY = 6;
 
-/* =========================
-   OUTILS
-   ========================= */
-
-function random(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function generateUniquePoem(theme) {
-  let poem;
-  let tries = 0;
-
-  do {
-    poem =
-      random(data[theme].intro) + "\n\n" +
-      random(data[theme].body) + "\n" +
-      random(data[theme].body) + "\n" +
-      random(data[theme].body) + "\n\n" +
-      random(data[theme].outro);
-
-    tries++;
-  } while (history[theme].includes(poem) && tries < 10);
-
-  history[theme].push(poem);
-  if (history[theme].length > MAX_HISTORY) {
-    history[theme].shift();
-  }
-
-  return poem;
-}
+const MAX_HISTORY = 5;
 
 /* =========================
    FONCTION PRINCIPALE
@@ -279,12 +286,32 @@ function generateUniquePoem(theme) {
 
 function generatePoem() {
   const now = Date.now();
-  if (now - lastTime < COOLDOWN) return;
+
+  // bloque si clic trop rapide
+  if (now - lastTime < COOLDOWN) {
+    return;
+  }
   lastTime = now;
 
   const theme = document.getElementById("theme").value;
-  const poem = generateUniquePoem(theme);
+  const list = poems[theme];
 
+  let poem;
+  let tries = 0;
+
+  // évite les répétitions récentes
+  do {
+    poem = list[Math.floor(Math.random() * list.length)];
+    tries++;
+  } while (history[theme].includes(poem) && tries < 10);
+
+  // met à jour l'historique
+  history[theme].push(poem);
+  if (history[theme].length > MAX_HISTORY) {
+    history[theme].shift();
+  }
+
+  // création du bloc poème
   const bloc = document.createElement("div");
   bloc.style.marginBottom = "30px";
   bloc.style.paddingBottom = "20px";
@@ -294,6 +321,5 @@ function generatePoem() {
   document.getElementById("poeme").prepend(bloc);
 }
 </script>
-
 </body>
 </html>

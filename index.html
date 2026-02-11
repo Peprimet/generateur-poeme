@@ -99,14 +99,22 @@ button:hover {
 }
 
 .poem {
-  padding: 20px;
+  padding: 25px;
   margin-bottom: 25px;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.08);
   border-radius: 12px;
   white-space: pre-line;
-  line-height: 1.6;
+  line-height: 1.8;
   border-left: 4px solid #e94560;
-  animation: fadeIn 0.5s ease-in-out;
+  font-style: italic;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.poem-header {
+  font-weight: bold;
+  color: #ff7a90;
+  margin-bottom: 10px;
+  font-style: normal;
 }
 
 @keyframes fadeIn {
@@ -128,14 +136,7 @@ button:hover {
 <div id="welcome" class="screen">
   <h1>Bienvenue sur le Générateur de Poèmes</h1>
   <h2>Une création poétique procédurale</h2>
-
-  <p style="margin-bottom:25px;">
-    Fait par
-    <a href="https://www.youtube.com/@PePrimeTKai" target="_blank" style="color: #ff7a90; text-decoration: none;">
-      PeprimetCk
-    </a>
-  </p>
-
+  <p style="margin-bottom:25px;">Fait par <a href="https://www.youtube.com/@PePrimeTKai" target="_blank" style="color: #ff7a90; text-decoration: none;">PeprimetCk</a></p>
   <button onclick="startApp()">Commencer</button>
 </div>
 
@@ -144,9 +145,7 @@ button:hover {
 
   <div style="margin-top: 20px;">
     <input type="text" id="userName" placeholder="Ton prénom (optionnel)">
-    
     <br>
-
     <select id="theme">
       <option value="amour">Amour</option>
       <option value="romance">Romance</option>
@@ -167,18 +166,15 @@ button:hover {
   </div>
 
   <button onclick="generatePoem()">Générer un poème</button>
-
   <p id="cooldownMsg" style="margin-top:10px; color: #ff7a90; height: 20px; font-size: 0.9em;"></p>
-
   <div id="poemContainer"></div>
 </div>
 
 <script>
-/* ===================== STATE ===================== */
+/* ===================== STATE & DATA ===================== */
 let lastClick = 0;
 const COOLDOWN = 5000;
 
-/* ===================== THEMES DATA ===================== */
 const themes = {
   amour: ["cœur","lien","présence","chaleur","attente","regard"],
   romance: ["douceur","frisson","instant","proximité","silence"],
@@ -206,18 +202,6 @@ function random(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function generateLine(themeWords, name) {
-  const s = random(starters);
-  const c = random(connectors);
-  const w = random(themeWords);
-  const e = random(endings);
-  
-  if (name && name.trim() !== "") {
-    return `${s} ${name}, ${c} ${w}, ${e}`;
-  }
-  return `${s} ${c} ${w}, ${e}`;
-}
-
 function generatePoem() {
   const now = Date.now();
   if (now - lastClick < COOLDOWN) {
@@ -231,22 +215,29 @@ function generatePoem() {
 
   const theme = document.getElementById("theme").value;
   const length = document.getElementById("length").value;
-  const name = document.getElementById("userName").value;
+  const name = document.getElementById("userName").value.trim();
   const words = themes[theme];
 
   let linesCount = length === "short" ? 4 : 8;
-  let poemText = "";
+  let poemBody = "";
 
+  // Génération des lignes de poème (sans le prénom à chaque fois)
   for (let i = 0; i < linesCount; i++) {
-    poemText += generateLine(words, name) + "\n";
+    poemBody += `${random(starters)} ${random(connectors)} ${random(words)}, ${random(endings)}\n`;
   }
 
   const div = document.createElement("div");
   div.className = "poem";
-  div.innerText = poemText.trim();
 
-  const container = document.getElementById("poemContainer");
-  container.prepend(div);
+  // Ajout du prénom de manière élégante
+  if (name !== "") {
+    const header = `<div class="poem-header">Pour ${name},</div>`;
+    div.innerHTML = header + poemBody.trim();
+  } else {
+    div.innerText = poemBody.trim();
+  }
+
+  document.getElementById("poemContainer").prepend(div);
 }
 </script>
 

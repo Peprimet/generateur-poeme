@@ -57,6 +57,7 @@ input[type="text"] {
   width: 250px;
   margin-bottom: 15px;
   outline: none;
+  text-align: center;
 }
 
 input[type="text"]:focus {
@@ -105,6 +106,12 @@ button:hover {
   white-space: pre-line;
   line-height: 1.6;
   border-left: 4px solid #e94560;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===================== FOOTER ===================== */
@@ -112,11 +119,6 @@ button:hover {
   margin-top: 30px;
   font-size: 14px;
   opacity: 0.8;
-}
-
-.footer a {
-  color: #ff7a90;
-  text-decoration: none;
 }
 </style>
 </head>
@@ -166,15 +168,13 @@ button:hover {
 
   <button onclick="generatePoem()">Générer un poème</button>
 
-  <p id="cooldownMsg" style="margin-top:10px; color: #ff7a90; height: 20px;"></p>
-  <p id="counter" style="margin-top:5px; opacity: 0.8;">Poèmes générés : 0</p>
+  <p id="cooldownMsg" style="margin-top:10px; color: #ff7a90; height: 20px; font-size: 0.9em;"></p>
 
   <div id="poemContainer"></div>
 </div>
 
 <script>
 /* ===================== STATE ===================== */
-let poemCount = 0;
 let lastClick = 0;
 const COOLDOWN = 5000;
 
@@ -192,7 +192,6 @@ const themes = {
   memoire: ["trace","écho","souvenir","empreinte","retour"]
 };
 
-/* ===================== STRUCTURE ===================== */
 const starters = ["Parfois,", "Sans prévenir,", "Il arrive que", "Avec le temps,", "Dans le silence,"];
 const connectors = ["je ressens", "on comprend", "il existe", "se dessine", "apparaît"];
 const endings = ["sans chercher plus.", "sans certitude.", "et cela suffit.", "sans explication.", "lentement."];
@@ -213,7 +212,6 @@ function generateLine(themeWords, name) {
   const w = random(themeWords);
   const e = random(endings);
   
-  // Si un prénom est fourni, on l'ajoute avec élégance
   if (name && name.trim() !== "") {
     return `${s} ${name}, ${c} ${w}, ${e}`;
   }
@@ -247,10 +245,8 @@ function generatePoem() {
   div.className = "poem";
   div.innerText = poemText.trim();
 
-  document.getElementById("poemContainer").prepend(div);
-
-  poemCount++;
-  document.getElementById("counter").innerText = "Poèmes générés : " + poemCount;
+  const container = document.getElementById("poemContainer");
+  container.prepend(div);
 }
 </script>
 

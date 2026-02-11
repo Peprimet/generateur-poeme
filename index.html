@@ -3,16 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Générateur de Poèmes</title>
-
 <style>
-/* ===================== RESET ===================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* ===================== BODY ===================== */
+/* ===================== RESET & STYLE ===================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   min-height: 100vh;
   background: #0f1220;
@@ -22,8 +15,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-/* ===================== SCREENS ===================== */
 .screen {
   width: 90%;
   max-width: 900px;
@@ -33,20 +24,6 @@ body {
   text-align: center;
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
-
-/* ===================== TITLES ===================== */
-h1 {
-  margin-bottom: 15px;
-  font-size: 2.2em;
-}
-
-h2 {
-  margin-bottom: 25px;
-  font-weight: normal;
-  opacity: 0.9;
-}
-
-/* ===================== INPUTS & SELECTS ===================== */
 input[type="text"] {
   padding: 12px 15px;
   border-radius: 8px;
@@ -56,190 +33,120 @@ input[type="text"] {
   font-size: 16px;
   width: 250px;
   margin-bottom: 15px;
-  outline: none;
   text-align: center;
 }
-
-input[type="text"]:focus {
-  border-color: #e94560;
-}
-
-select {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: none;
-  font-size: 15px;
-  margin: 10px;
-  background: white;
-  cursor: pointer;
-}
-
-/* ===================== BUTTONS ===================== */
+select { padding: 10px; border-radius: 8px; margin: 10px; cursor: pointer; }
 button {
   padding: 12px 25px;
   border-radius: 10px;
   border: none;
-  font-size: 16px;
-  cursor: pointer;
   background: #e94560;
   color: white;
-  transition: transform 0.2s, background 0.2s;
-  margin-top: 10px;
+  cursor: pointer;
+  font-size: 16px;
 }
+button:hover { background: #ff5c77; transform: scale(1.05); }
 
-button:hover {
-  background: #ff5c77;
-  transform: scale(1.05);
-}
-
-/* ===================== POEM ===================== */
-#poemContainer {
-  margin-top: 30px;
-  text-align: left;
-}
-
+/* ===================== POEM STYLE ===================== */
+#poemContainer { margin-top: 30px; text-align: left; }
 .poem {
   padding: 25px;
   margin-bottom: 25px;
   background: rgba(255,255,255,0.08);
   border-radius: 12px;
-  white-space: pre-line;
-  line-height: 1.8;
   border-left: 4px solid #e94560;
-  font-style: italic;
-  animation: fadeIn 0.6s ease-out;
+  line-height: 1.8;
+  white-space: pre-wrap; /* Important pour les retours à la ligne */
 }
-
-.poem-header {
-  font-weight: bold;
+.dedicace {
   color: #ff7a90;
+  font-weight: bold;
+  font-size: 1.1em;
   margin-bottom: 10px;
-  font-style: normal;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===================== FOOTER ===================== */
-.footer {
-  margin-top: 30px;
-  font-size: 14px;
-  opacity: 0.8;
+  display: block;
 }
 </style>
 </head>
-
 <body>
 
 <div id="welcome" class="screen">
   <h1>Bienvenue sur le Générateur de Poèmes</h1>
-  <h2>Une création poétique procédurale</h2>
-  <p style="margin-bottom:25px;">Fait par <a href="https://www.youtube.com/@PePrimeTKai" target="_blank" style="color: #ff7a90; text-decoration: none;">PeprimetCk</a></p>
   <button onclick="startApp()">Commencer</button>
 </div>
 
 <div id="app" class="screen" style="display:none;">
   <h1>📝 Générateur de Poèmes</h1>
-
-  <div style="margin-top: 20px;">
-    <input type="text" id="userName" placeholder="Ton prénom (optionnel)">
-    <br>
-    <select id="theme">
-      <option value="amour">Amour</option>
-      <option value="romance">Romance</option>
-      <option value="nature">Nature</option>
-      <option value="vie">Vie</option>
-      <option value="solitude">Solitude</option>
-      <option value="liberte">Liberté</option>
-      <option value="temps">Temps</option>
-      <option value="reve">Rêve</option>
-      <option value="espoir">Espoir</option>
-      <option value="memoire">Mémoire</option>
-    </select>
-
-    <select id="length">
-      <option value="short">Court</option>
-      <option value="long">Long</option>
-    </select>
-  </div>
-
+  <input type="text" id="userName" placeholder="Ton prénom (optionnel)">
+  <br>
+  <select id="theme">
+    <option value="amour">Amour</option>
+    <option value="nature">Nature</option>
+    <option value="vie">Vie</option>
+    <option value="reve">Rêve</option>
+  </select>
+  <select id="length">
+    <option value="short">Court</option>
+    <option value="long">Long</option>
+  </select>
+  <br>
   <button onclick="generatePoem()">Générer un poème</button>
-  <p id="cooldownMsg" style="margin-top:10px; color: #ff7a90; height: 20px; font-size: 0.9em;"></p>
+  <p id="cooldownMsg" style="margin-top:10px; color: #ff7a90;"></p>
   <div id="poemContainer"></div>
 </div>
 
 <script>
-/* ===================== STATE & DATA ===================== */
 let lastClick = 0;
-const COOLDOWN = 5000;
-
 const themes = {
-  amour: ["cœur","lien","présence","chaleur","attente","regard"],
-  romance: ["douceur","frisson","instant","proximité","silence"],
-  nature: ["vent","terre","lumière","forêt","ciel","respiration"],
-  vie: ["chemin","choix","sens","passage","équilibre","mouvement"],
-  solitude: ["nuit","absence","vide","calme","retrait","distance"],
-  liberte: ["élan","horizon","espace","départ","ouverture"],
-  temps: ["minute","souvenir","retard","instant","passé","durée"],
-  reve: ["ailleurs","possible","flou","image","projection"],
-  espoir: ["demain","lueur","continuer","avenir","attente"],
-  memoire: ["trace","écho","souvenir","empreinte","retour"]
+  amour: ["cœur","lien","présence","chaleur"],
+  nature: ["vent","terre","lumière","forêt"],
+  vie: ["chemin","choix","sens","équilibre"],
+  reve: ["ailleurs","possible","flou","image"]
 };
+const starters = ["Parfois,", "Sans prévenir,", "Il arrive que", "Dans le silence,"];
+const connectors = ["je ressens", "on comprend", "il existe", "se dessine"];
+const endings = ["sans chercher plus.", "et cela suffit.", "lentement."];
 
-const starters = ["Parfois,", "Sans prévenir,", "Il arrive que", "Avec le temps,", "Dans le silence,"];
-const connectors = ["je ressens", "on comprend", "il existe", "se dessine", "apparaît"];
-const endings = ["sans chercher plus.", "sans certitude.", "et cela suffit.", "sans explication.", "lentement."];
-
-/* ===================== FUNCTIONS ===================== */
 function startApp() {
   document.getElementById("welcome").style.display = "none";
   document.getElementById("app").style.display = "block";
 }
 
-function random(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+function random(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function generatePoem() {
   const now = Date.now();
-  if (now - lastClick < COOLDOWN) {
-    const timeLeft = Math.ceil((COOLDOWN - (now - lastClick)) / 1000);
-    document.getElementById("cooldownMsg").innerText = `⏳ Attends encore ${timeLeft}s...`;
+  if (now - lastClick < 5000) {
+    document.getElementById("cooldownMsg").innerText = "⏳ Attends un peu...";
     return;
   }
-
   lastClick = now;
   document.getElementById("cooldownMsg").innerText = "";
 
+  const name = document.getElementById("userName").value.trim();
   const theme = document.getElementById("theme").value;
   const length = document.getElementById("length").value;
-  const name = document.getElementById("userName").value.trim();
   const words = themes[theme];
 
   let linesCount = length === "short" ? 4 : 8;
-  let poemBody = "";
+  let poemContent = "";
 
-  // Génération des lignes de poème (sans le prénom à chaque fois)
   for (let i = 0; i < linesCount; i++) {
-    poemBody += `${random(starters)} ${random(connectors)} ${random(words)}, ${random(endings)}\n`;
+    poemContent += `${random(starters)} ${random(connectors)} ${random(words)}, ${random(endings)}\n`;
   }
 
   const div = document.createElement("div");
   div.className = "poem";
 
-  // Ajout du prénom de manière élégante
+  // Ici on construit le contenu proprement
+  let finalHTML = "";
   if (name !== "") {
-    const header = `<div class="poem-header">Pour ${name},</div>`;
-    div.innerHTML = header + poemBody.trim();
-  } else {
-    div.innerText = poemBody.trim();
+    finalHTML += `<span class="dedicace">Pour ${name},</span>`;
   }
-
+  finalHTML += `<div>${poemContent}</div>`;
+  
+  div.innerHTML = finalHTML;
   document.getElementById("poemContainer").prepend(div);
 }
 </script>
-
 </body>
 </html>

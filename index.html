@@ -10,32 +10,33 @@
         body {
             min-height: 100vh;
             background: #0b0e14;
-            font-family: sans-serif; /* Police standard pour correspondre à l'interface */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: #f5f5f5;
             display: flex; justify-content: center; align-items: center; padding: 20px;
         }
 
         .container {
-            width: 100%; max-width: 600px;
+            width: 100%; max-width: 550px;
             background: #1a1a1a;
-            padding: 30px; border-radius: 15px;
+            padding: 25px; border-radius: 12px;
             border: 1px solid #333;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
         }
 
-        h1 { text-align: center; margin-bottom: 25px; font-weight: 400; font-size: 1.5rem; letter-spacing: 1px; }
+        h1 { text-align: center; margin-bottom: 20px; font-weight: 400; font-size: 1.3rem; letter-spacing: 1px; }
 
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .full { grid-column: span 2; }
 
         input, select, button {
             font-family: inherit;
             padding: 10px; border-radius: 6px; border: 1px solid #444;
-            font-size: 0.9rem; outline: none;
+            font-size: 0.85rem; outline: none;
         }
 
-        input { background: #222; color: white; }
+        input { background: #222; color: white; border: 1px solid #333; }
 
+        /* MENU ROUGE FIXE */
         select {
             background-color: #8b0000 !important;
             color: #ffffff !important; 
@@ -44,26 +45,29 @@
             appearance: none; -webkit-appearance: none;
         }
 
+        /* Empêche le blanc sur les options */
+        select option { background-color: #8b0000; color: white; }
+
         button {
-            grid-column: span 2; margin-top: 10px;
+            grid-column: span 2; margin-top: 5px;
             background: #e94560; color: white; border: none;
             font-weight: bold; cursor: pointer; transition: 0.2s;
         }
 
         button:hover { background: #ff5c77; }
 
-        /* ZONE DU POÈME - TAILLE RÉDUITE */
+        /* ZONE DU POÈME - TAILLE IDENTIQUE À L'INTERFACE */
         #poemDisplay {
-            margin-top: 25px; padding: 20px; border-left: 2px solid #e94560;
+            margin-top: 20px; padding: 15px; border-left: 2px solid #e94560;
             background: rgba(255,255,255,0.02); 
-            line-height: 1.6; 
-            font-size: 0.9rem; /* Taille identique au texte standard */
-            font-family: 'Georgia', serif; /* Garde une touche poétique ici */
+            line-height: 1.5; 
+            font-size: 14px; /* Taille standard interface */
+            font-family: 'Georgia', serif; 
             font-style: italic; white-space: pre-wrap; display: none;
         }
 
         .signature {
-            margin-top: 15px; text-align: center; opacity: 0.5; font-size: 0.8rem;
+            margin-top: 15px; text-align: center; opacity: 0.5; font-size: 0.75rem;
         }
     </style>
 </head>
@@ -73,7 +77,7 @@
     <h1>✒️ Poetix Pro</h1>
     
     <div class="controls">
-        <input type="text" id="target" class="full" placeholder="Dédié à...">
+        <input type="text" id="target" class="full" placeholder="Dédié à (optionnel)...">
         
         <select id="themeSelect">
             <option value="amour">💖 Amour</option>
@@ -87,8 +91,8 @@
         </select>
         
         <select id="length">
-            <option value="8">8 Vers</option>
-            <option value="16">16 Vers</option>
+            <option value="8">8 Vers (Court)</option>
+            <option value="16">16 Vers (Long)</option>
         </select>
         
         <button onclick="generate()">Générer le poème</button>
@@ -99,7 +103,6 @@
 </div>
 
 <script>
-// (Le script JavaScript reste identique à la version précédente pour garantir la qualité des textes)
 const library = {
     themes: {
         amour: {
@@ -162,7 +165,7 @@ function generate() {
     const theme = library.themes[themeKey];
 
     let poem = "";
-    if(target) poem += `<span style="color:#e94560; font-weight:bold;">Dédié à ${target},</span>\n\n`;
+    if(target) poem += `<span style="color:#e94560; font-weight:bold; font-family:sans-serif; font-style:normal; font-size:13px">À ${target},</span>\n\n`;
 
     for(let i = 0; i < length; i++) {
         let line = `${shuffle([...theme.i])[0]} ${shuffle([...theme.s])[0]} ${shuffle([...theme.a])[0]} ${shuffle([...theme.c])[0]}`;

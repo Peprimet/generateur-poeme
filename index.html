@@ -36,7 +36,6 @@
 
         input { background: #222; color: white; border: 1px solid #333; }
 
-        /* MENU ROUGE FIXE */
         select {
             background-color: #8b0000 !important;
             color: #ffffff !important; 
@@ -45,7 +44,6 @@
             appearance: none; -webkit-appearance: none;
         }
 
-        /* Empêche le blanc sur les options */
         select option { background-color: #8b0000; color: white; }
 
         button {
@@ -56,12 +54,11 @@
 
         button:hover { background: #ff5c77; }
 
-        /* ZONE DU POÈME - TAILLE IDENTIQUE À L'INTERFACE */
         #poemDisplay {
             margin-top: 20px; padding: 15px; border-left: 2px solid #e94560;
             background: rgba(255,255,255,0.02); 
             line-height: 1.5; 
-            font-size: 14px; /* Taille standard interface */
+            font-size: 14px; 
             font-family: 'Georgia', serif; 
             font-style: italic; white-space: pre-wrap; display: none;
         }
@@ -75,10 +72,8 @@
 
 <div class="container">
     <h1>✒️ Poetix Pro</h1>
-    
     <div class="controls">
         <input type="text" id="target" class="full" placeholder="Dédié à (optionnel)...">
-        
         <select id="themeSelect">
             <option value="amour">💖 Amour</option>
             <option value="romance">🌹 Romance</option>
@@ -88,16 +83,17 @@
             <option value="hiver">❄️ Hiver</option>
             <option value="reve">✨ Rêve</option>
             <option value="solitude">🌙 Solitude</option>
+            <option value="espace">🚀 Espace</option>
+            <option value="abysse">🌊 Abysse</option>
+            <option value="melancolie">🎻 Mélancolie</option>
         </select>
-        
         <select id="length">
-            <option value="8">8 Vers (Court)</option>
-            <option value="16">16 Vers (Long)</option>
+            <option value="8">8 Vers</option>
+            <option value="16">16 Vers</option>
+            <option value="24">24 Vers</option>
         </select>
-        
         <button onclick="generate()">Générer le poème</button>
     </div>
-
     <div id="poemDisplay"></div>
     <div id="sign" class="signature" style="display:none;">« Le monde est vaste, et tu es venu. » ✨</div>
 </div>
@@ -106,52 +102,70 @@
 const library = {
     themes: {
         amour: {
-            i: ["Dans le silence,", "Sous l'éclat,", "Ici,", "Parfois,", "Soudain,", "Au creux de l'âme,"],
-            s: ["le cœur", "ton regard", "la passion", "l'étreinte", "ton souffle", "notre lien"],
-            a: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "tisse un espoir"],
-            c: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des jours.", "pour l'éternité."]
+            i: ["Dans le silence,", "Sous l'éclat,", "Ici,", "Parfois,", "Soudain,", "Au creux de l'âme,", "Sans un mot,", "À l'infini,", "Sous le ciel,", "Dans ton cœur,"],
+            s: ["le cœur", "ton regard", "la passion", "l'étreinte", "ton souffle", "notre lien", "l'étincelle", "le désir", "l'espoir", "la flamme"],
+            a: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "tisse un espoir", "brûle de mille feux", "chante l'instant", "sculpte le temps", "cherche la paix"],
+            c: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des jours.", "pour l'éternité.", "vers un monde nouveau.", "sous l'aile du destin.", "en lettres de lumière.", "sans jamais faiblir."]
         },
         romance: {
-            i: ["Doucement,", "Sur le balcon,", "Dans la brise,", "Sous la lune,", "Comme un soupir,"],
-            s: ["le violon", "le clair de lune", "le parfum des roses", "la valse", "un doux baiser", "le soir"],
-            a: ["feuillette le rêve", "murmure des mots anciens", "soupire en secret", "guide nos pas", "danse avec l'oubli"],
-            c: ["comme un vieux roman.", "dans la ville endormie.", "sous l'aile des heures.", "aux reflets de soie.", "loin de la poussière."]
+            i: ["Doucement,", "Sur le balcon,", "Dans la brise,", "Sous la lune,", "Comme un soupir,", "À demi-mot,", "Dans le velours,", "Sous la pluie,", "Ici même,", "Dans l'ombre,"],
+            s: ["le violon", "le clair de lune", "le parfum des roses", "la valse", "un doux baiser", "le soir", "le piano", "la promesse", "le lys", "le voile"],
+            a: ["feuillette le rêve", "murmure des mots anciens", "soupire en secret", "guide nos pas", "danse avec l'oubli", "berce la ville", "illumine l'âme", "effleure la peau", "enlace l'esprit", "attend le jour"],
+            c: ["comme un vieux roman.", "dans la ville endormie.", "sous l'aile des heures.", "aux reflets de soie.", "loin de la poussière.", "que le vent emporte.", "en un vol éphémère.", "sous le ciel de Paris.", "dans un souffle léger.", "pour toujours."]
         },
         printemps: {
-            i: ["Au matin pur,", "Dans le jardin,", "Sous l'aurore,", "Parmi les fleurs,", "Dès le réveil,"],
-            s: ["le bourgeon", "l'hirondelle", "la rosée", "le vent messager", "la clarté", "le zéphyr"],
-            a: ["s'éveille en douceur", "écrit sur l'herbe", "traduit le cristal", "écarte l'hiver", "invente des mondes"],
-            c: ["dans un souffle nouveau.", "sur la terre féconde.", "comme un chant de liberté.", "aux couleurs retrouvées.", "sous le soleil naissant."]
+            i: ["Au matin pur,", "Dans le jardin,", "Sous l'aurore,", "Parmi les fleurs,", "Dès le réveil,", "Sous le soleil,", "Dans la vallée,", "Près du ruisseau,", "Au grand air,", "Soudain,"],
+            s: ["le bourgeon", "l'hirondelle", "la rosée", "le vent messager", "la clarté", "le zéphyr", "le lilas", "le premier chant", "la nature", "la vie"],
+            a: ["s'éveille en douceur", "écrit sur l'herbe", "traduit le cristal", "écarte l'hiver", "invente des mondes", "rit aux éclats", "danse sur l'eau", "fleurit en secret", "colore le jour", "brille de vie"],
+            c: ["dans un souffle nouveau.", "sur la terre féconde.", "comme un chant de liberté.", "aux couleurs retrouvées.", "sous le soleil naissant.", "parmi les verts pâturages.", "dans l'éveil du monde.", "vers l'horizon clair.", "comme un renouveau.", "en toute simplicité."]
         },
         ete: {
-            i: ["Au plein midi,", "Sous l'or chaud,", "Dans le zénith,", "Face à la mer,", "Sous l'azur,"],
-            s: ["le soleil", "le blé mûr", "le ciel pur", "le sable", "la chaleur", "l'éclat brûlant"],
-            a: ["embrase l'horizon", "fige le temps", "chante sa gloire", "coule sur les toits", "fait vibrer l'air"],
-            c: ["en une braise têtue.", "dans l'immensité bleue.", "sous un dôme de feu.", "pour l'éternité.", "comme un secret solaire."]
+            i: ["Au plein midi,", "Sous l'or chaud,", "Dans le zénith,", "Face à la mer,", "Sous l'azur,", "Sur le sable,", "Dans la chaleur,", "Sous les pins,", "À l'ombre,", "Loin d'ici,"],
+            s: ["le soleil", "le blé mûr", "le ciel pur", "le sable", "la chaleur", "l'éclat brûlant", "la mer", "la cigale", "l'été", "le mirage"],
+            a: ["embrase l'horizon", "fige le temps", "chante sa gloire", "coule sur les toits", "fait vibrer l'air", "brûle la peau", "scintille au loin", "caresse les vagues", "endort la terre", "illumine le sel"],
+            c: ["en une braise têtue.", "dans l'immensité bleue.", "sous un dôme de feu.", "pour l'éternité.", "comme un secret solaire.", "sous le cri des oiseaux.", "dans le repos des jours.", "en un rêve doré.", "vers le soir orangé.", "sans fin."]
         },
         automne: {
-            i: ["Sous le gris,", "Dans la brume,", "Au vent frais,", "Sous les nuages,", "Dans le soir,"],
-            s: ["la feuille morte", "la forêt rousse", "la pluie fine", "le crépuscule", "l'ambre des bois", "le souvenir"],
-            a: ["tombe en tourbillons", "pleure sur les bancs", "raconte l'hier", "glisse entre les mains", "éteint les feux"],
-            c: ["comme un vieux souvenir.", "dans la nostalgie pure.", "sous les pas des amants.", "que le vent emporte.", "vers le repos du monde."]
+            i: ["Sous le gris,", "Dans la brume,", "Au vent frais,", "Sous les nuages,", "Dans le soir,", "Parmi les bois,", "Sur le chemin,", "Loin du jour,", "Sous la pluie,", "Ici,"],
+            s: ["la feuille morte", "la forêt rousse", "la pluie fine", "le crépuscule", "l'ambre des bois", "le souvenir", "le vent du nord", "le brouillard", "la terre", "le chêne"],
+            a: ["tombe en tourbillons", "pleure sur les bancs", "raconte l'hier", "glisse entre les mains", "éteint les feux", "danse sur le sol", "gémit dans les branches", "couvre la mousse", "cache le soleil", "attend la neige"],
+            c: ["comme un vieux souvenir.", "dans la nostalgie pure.", "sous les pas des amants.", "que le vent emporte.", "vers le repos du monde.", "en murmures d'automne.", "sous le ciel de suie.", "dans le silence roux.", "comme un adieu.", "en silence."]
         },
         hiver: {
-            i: ["Dans le gel,", "Sous la neige,", "Par grand froid,", "Dans la nuit,", "Sous le givre,"],
-            s: ["le cristal", "le manteau blanc", "le silence", "le feu de bois", "la glace", "la bise"],
-            a: ["mord la poussière", "fige la rivière", "sculpte le vide", "brille sous la lune", "veille sur l'ombre"],
-            c: ["dans un écrin de sel.", "sous un voile de deuil.", "comme une étoile froide.", "au cœur des maisons.", "loin du tumulte."]
+            i: ["Dans le gel,", "Sous la neige,", "Par grand froid,", "Dans la nuit,", "Sous le givre,", "Près de l'âtre,", "Sous le ciel blanc,", "Au vent glacé,", "Dans l'ombre,", "Partout,"],
+            s: ["le cristal", "le manteau blanc", "le silence", "le feu de bois", "la glace", "la bise", "le flocon", "le loup", "le givre", "le vide"],
+            a: ["mord la poussière", "fige la rivière", "sculpte le vide", "brille sous la lune", "veille sur l'ombre", "endort les fleurs", "pique les visages", "étouffe les bruits", "isole les cœurs", "reste immobile"],
+            c: ["dans un écrin de sel.", "sous un voile de deuil.", "comme une étoile froide.", "au cœur des maisons.", "loin du tumulte.", "sous le ciel de plomb.", "dans la paix du froid.", "comme un rêve blanc.", "vers le printemps lointain.", "pour toujours."]
         },
         reve: {
-            i: ["Dans le songe,", "Sous le voile,", "Loin d'ici,", "Dans le flou,", "Comme un mirage,"],
-            s: ["le nuage", "le miroir", "l'imaginaire", "le vol libre", "l'ombre", "l'onirisme"],
-            a: ["invente des cieux", "trompe le réel", "s'évade du corps", "joue avec l'âme", "dessine demain"],
-            c: ["loin des regards.", "dans un monde à part.", "comme un voile léger.", "au-delà des frontières.", "que l'esprit conduit."]
+            i: ["Dans le songe,", "Sous le voile,", "Loin d'ici,", "Dans le flou,", "Comme un mirage,", "Sous les paupières,", "Au-delà du monde,", "Dans l'éther,", "Soudain,", "En secret,"],
+            s: ["le nuage", "le miroir", "l'imaginaire", "le vol libre", "l'ombre", "l'onirisme", "le spectre", "la chimère", "le palais", "l'esprit"],
+            a: ["invente des cieux", "trompe le réel", "s'évade du corps", "joue avec l'âme", "dessine demain", "s'envole au loin", "efface les peines", "sculpte les nuées", "danse dans le noir", "ouvre les portes"],
+            c: ["loin des regards.", "dans un monde à part.", "comme un voile léger.", "au-delà des frontières.", "que l'esprit conduit.", "vers des terres d'or.", "dans l'écho de la nuit.", "sans laisser de trace.", "en un éclair.", "éternellement."]
         },
         solitude: {
-            i: ["Seul au monde,", "Dans le vide,", "Sans un bruit,", "Dans l'absence,", "Sous l'écho,"],
-            s: ["le silence", "le temps", "le chemin", "le murmure", "le calme", "l'ombre seule"],
-            a: ["résonne au loin", "s'étire sans fin", "habite l'espace", "écoute le vent", "cherche une réponse"],
-            c: ["dans la nuit calme.", "comme une âme en peine.", "au fond de l'oubli.", "sans jamais de réponse.", "pour l'éternité."]
+            i: ["Seul au monde,", "Dans le vide,", "Sans un bruit,", "Dans l'absence,", "Sous l'écho,", "Loin des autres,", "Dans le noir,", "Au bord du gouffre,", "Ici même,", "Face au rien,"],
+            s: ["le silence", "le temps", "le chemin", "le murmure", "le calme", "l'ombre seule", "le cri muet", "la pensée", "l'âme", "la pierre"],
+            a: ["résonne au loin", "s'étire sans fin", "habite l'espace", "écoute le vent", "cherche une réponse", "s'enfonce en soi", "contemple l'oubli", "attend le secours", "se perd dans le noir", "pleure en silence"],
+            c: ["dans la nuit calme.", "comme une âme en peine.", "au fond de l'oubli.", "sans jamais de réponse.", "pour l'éternité.", "sous les étoiles froides.", "dans le désert des jours.", "comme un dernier espoir.", "vers l'horizon vide.", "seul."]
+        },
+        espace: {
+            i: ["Dans l'infini,", "Sous les étoiles,", "Parmi les astres,", "Dans le vide noir,", "Loin de la Terre,", "Sous la Voie Lactée,", "À travers le temps,", "Dans le cosmos,", "Soudain,", "Là-haut,"],
+            s: ["la comète", "le trou noir", "la nébuleuse", "le satellite", "la poussière d'étoile", "la galaxie", "le soleil froid", "l'astéroïde", "le vide", "la lumière"],
+            a: ["voyage sans fin", "dévore la lumière", "brille de mille feux", "tourne en silence", "explore le néant", "scintille dans l'ombre", "traverse les siècles", "observe le monde", "tombe vers l'oubli", "illumine le rien"],
+            c: ["vers un univers lointain.", "dans le silence des sphères.", "comme un écho de Big Bang.", "sous l'œil de Dieu.", "par-delà les nuées.", "en un voyage sans retour.", "vers l'éternité noire.", "dans la danse des planètes.", "pour toujours.", "à jamais."]
+        },
+        abysse: {
+            i: ["Sous les ondes,", "Dans les profondeurs,", "Au fond du gouffre,", "Loin de la plage,", "Dans le noir marin,", "Sous la pression,", "Dans l'eau glacée,", "Soudain,", "Ici bas,", "Dans le bleu,"],
+            s: ["le courant", "le monstre", "le corail noir", "l'épave", "le silence liquide", "la faille", "le sel", "l'écume", "la créature", "l'abîme"],
+            a: ["engloutit les rêves", "veille sur l'or", "danse avec les morts", "respire le noir", "pousse un soupir", "cache ses trésors", "ondule sans bruit", "rêve de surface", "écrase le temps", "attend la lumière"],
+            c: ["dans l'empire du rien.", "sous le poids des mers.", "comme un secret enfoui.", "loin des hommes.", "vers le centre du monde.", "en un ballet muet.", "sous l'aile des vagues.", "dans l'oubli des fonds.", "pour l'éternité.", "dans le silence."]
+        },
+        melancolie: {
+            i: ["Dans la tristesse,", "Sous les remords,", "Avec regret,", "Par un soir gris,", "Loin du bonheur,", "Dans la nostalgie,", "Sous la pluie,", "Ici,", "Soudain,", "Dans l'ennui,"],
+            s: ["le cœur lourd", "la larme", "le violon triste", "le passé", "le fantôme", "le chagrin", "le soupir", "la blessure", "l'absence", "le deuil"],
+            a: ["joue une symphonie", "coule sur la joue", "chante l'adieu", "revient nous hanter", "efface le sourire", "habite la chambre", "sculpte la douleur", "cherche le réconfort", "berce le malheur", "tue l'espoir"],
+            c: ["comme une ombre fidèle.", "dans le froid de l'âme.", "sous le poids des ans.", "que personne n'entend.", "vers l'oubli total.", "en un dernier cri.", "dans la poussière du temps.", "comme un parfum fané.", "sous le ciel éteint.", "pour toujours."]
         }
     }
 };

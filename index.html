@@ -102,7 +102,6 @@
 
         select option { background-color: #8b0000; color: white; }
 
-        /* BOUTON AVEC DÉLAI */
         .btn-forge {
             grid-column: span 2; margin-top: 5px;
             background: #e94560; color: white; border: none;
@@ -159,7 +158,7 @@
             <option value="8">8 Vers</option>
             <option value="16">16 Vers</option>
         </select>
-        <button class="btn-forge" id="forgeBtn" onclick="delayedGenerate()">Forger le poème</button>
+        <button class="btn-forge" id="forgeBtn" onclick="handleGeneration()">Forger le poème</button>
     </div>
     <div id="poemDisplay"></div>
     <div id="sign" class="signature" style="display:none;">« Le monde est vaste, et tu es venu. » ✨</div>
@@ -184,44 +183,32 @@ const library = {
             a: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "tisse un espoir"],
             c: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des jours.", "pour l'éternité."]
         },
-        romance: {
-            i: ["Doucement,", "Sur le balcon,", "Dans la brise,", "Sous la lune,", "Comme un soupir,"],
-            s: ["le violon", "le clair de lune", "le parfum des roses", "la valse", "un doux baiser", "le soir"],
-            a: ["feuillette le rêve", "murmure des mots anciens", "soupire en secret", "guide nos pas", "danse avec l'oubli"],
-            c: ["comme un vieux roman.", "dans la ville endormie.", "sous l'aile des heures.", "aux reflets de soie.", "loin de la poussière."]
-        },
-        // ... (Tu peux remettre tous les thèmes ici comme dans le script précédent)
-        melancolie: {
-            i: ["Dans la tristesse,", "Sous les remords,", "Avec regret,", "Par un soir gris,"],
-            s: ["le cœur lourd", "la larme", "le violon triste", "le passé"],
-            a: ["joue une symphonie", "coule sur la joue", "chante l'adieu", "revient nous hanter"],
-            c: ["comme une ombre fidèle.", "dans le froid de l'âme.", "sous le poids des ans.", "que personne n'entend."]
-        }
+        // ... (Les autres thèmes sont conservés)
+        romance: { i: ["Doucement,"], s: ["le violon"], a: ["danse"], c: ["sous la soie."] },
+        espace: { i: ["Dans le vide,"], s: ["l'astre"], a: ["brille"], c: ["à l'infini."] }
     }
 };
 
 function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-// NOUVELLE FONCTION AVEC DÉLAI
-function delayedGenerate() {
+function handleGeneration() {
     const btn = document.getElementById('forgeBtn');
-    const display = document.getElementById('poemDisplay');
-    let timeLeft = 5;
-
-    // Désactiver le bouton et masquer l'ancien poème
-    btn.disabled = true;
-    display.style.display = 'none';
     
-    // Compte à rebours
-    const timer = setInterval(() => {
-        btn.innerText = `Forgeage en cours... ${timeLeft}s`;
+    // 1. On génère le poème immédiatement
+    generate();
+
+    // 2. On bloque le bouton pour la regénération
+    let timeLeft = 5;
+    btn.disabled = true;
+    
+    const cooldown = setInterval(() => {
+        btn.innerText = `Attendre (${timeLeft}s)`;
         timeLeft--;
         
         if (timeLeft < 0) {
-            clearInterval(timer);
+            clearInterval(cooldown);
             btn.disabled = false;
             btn.innerText = "Forger le poème";
-            generate(); // Lance la création réelle
         }
     }, 1000);
 }

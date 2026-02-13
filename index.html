@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Athanor Poétique | Générateur d'Art</title>
+    <title>L'Athanor Poétique | Anthologie</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -140,7 +140,7 @@
 <div class="container" id="mainContainer">
     <h1 class="main-title">✒️ Poetix Pro</h1>
     <div class="controls">
-        <input type="text" id="target" class="full" placeholder="Dédié à (optionnel)...">
+        <input type="text" id="target" class="full" placeholder="À qui sont ces mots ?">
         <select id="themeSelect">
             <option value="amour">💖 Amour</option>
             <option value="romance">🌹 Romance</option>
@@ -155,8 +155,8 @@
             <option value="melancolie">🎻 Mélancolie</option>
         </select>
         <select id="length">
-            <option value="8">8 Vers</option>
-            <option value="16">16 Vers</option>
+            <option value="8">8 Vers (Court)</option>
+            <option value="16">16 Vers (Long)</option>
         </select>
         <button class="btn-forge" id="forgeBtn" onclick="handleGeneration()">Forger le poème</button>
     </div>
@@ -183,21 +183,38 @@ const library = {
             a: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "tisse un espoir"],
             c: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des jours.", "pour l'éternité."]
         },
-        // ... (Les autres thèmes sont conservés)
-        romance: { i: ["Doucement,"], s: ["le violon"], a: ["danse"], c: ["sous la soie."] },
-        espace: { i: ["Dans le vide,"], s: ["l'astre"], a: ["brille"], c: ["à l'infini."] }
+        romance: {
+            i: ["Doucement,", "Sur le balcon,", "Dans la brise,", "Sous la lune,"],
+            s: ["le violon", "le clair de lune", "le parfum des roses", "la valse"],
+            a: ["feuillette le rêve", "murmure des mots anciens", "soupire en secret"],
+            c: ["comme un vieux roman.", "dans la ville endormie.", "sous l'aile des heures."]
+        },
+        espace: {
+            i: ["Dans l'infini,", "Sous les étoiles,", "Dans le vide noir,"],
+            s: ["la comète", "le trou noir", "la nébuleuse", "la poussière d'étoile"],
+            a: ["voyage sans fin", "dévore la lumière", "brille de mille feux"],
+            c: ["vers un univers lointain.", "dans le silence des sphères.", "à jamais."]
+        },
+        melancolie: {
+            i: ["Dans la tristesse,", "Sous les remords,", "Avec regret,"],
+            s: ["le cœur lourd", "la larme", "le passé", "le chagrin"],
+            a: ["joue une symphonie", "coule sur la joue", "efface le sourire"],
+            c: ["comme une ombre fidèle.", "dans le froid de l'âme.", "pour toujours."]
+        }
+        // Les autres thèmes peuvent être ajoutés ici sur le même modèle
     }
 };
 
 function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
+// LOGIQUE : GÉNÉRATION INSTANTANÉE PUIS COOLDOWN
 function handleGeneration() {
     const btn = document.getElementById('forgeBtn');
     
-    // 1. On génère le poème immédiatement
+    // 1. Générer le poème immédiatement
     generate();
 
-    // 2. On bloque le bouton pour la regénération
+    // 2. Lancer le délai de 5 secondes pour la suite
     let timeLeft = 5;
     btn.disabled = true;
     

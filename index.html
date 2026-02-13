@@ -1,158 +1,133 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Générateur de Poèmes</title>
-<style>
-/* ===================== RESET & DESIGN ===================== */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  min-height: 100vh;
-  background: #0f1220;
-  font-family: 'Georgia', serif;
-  color: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.screen {
-  width: 90%;
-  max-width: 800px;
-  background: rgba(255,255,255,0.05);
-  padding: 40px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-}
-input[type="text"] {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.1);
-  color: white;
-  width: 250px;
-  margin-bottom: 15px;
-  text-align: center;
-}
-select { padding: 10px; border-radius: 8px; margin: 5px; cursor: pointer; }
-button {
-  padding: 12px 25px;
-  border-radius: 10px;
-  border: none;
-  background: #e94560;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  transition: 0.3s;
-}
-button:hover { background: #ff5c77; transform: translateY(-2px); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poetix | Les Saisons du Cœur</title>
+    <style>
+        :root { --primary: #e94560; --bg: #0f1220; --text: #f5f5f5; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            font-family: 'Georgia', serif;
+            color: var(--text);
+            display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
 
-/* ===================== POEM STYLE ===================== */
-#poemContainer { margin-top: 30px; text-align: left; }
-.poem {
-  padding: 25px;
-  margin-bottom: 25px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-  border-left: 5px solid #e94560;
-  line-height: 1.8;
-  white-space: pre-wrap;
-  animation: fadeIn 0.8s ease;
-}
-.dedicace { color: #ff7a90; font-weight: bold; margin-bottom: 10px; display: block; font-style: normal; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-</style>
+        .container {
+            width: 100%; max-width: 650px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 40px; border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
+        
+        input, select {
+            padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1); color: white; font-size: 1rem; outline: none;
+        }
+
+        button {
+            padding: 15px; border-radius: 12px; border: none; font-size: 1.1rem;
+            background: linear-gradient(45deg, #e94560, #ff7a90);
+            color: white; cursor: pointer; font-weight: bold; transition: 0.4s;
+            grid-column: span 2;
+        }
+
+        button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(233, 69, 96, 0.4); }
+
+        #poemDisplay {
+            margin-top: 30px; padding: 30px; background: rgba(255,255,255,0.03);
+            border-radius: 20px; border-left: 4px solid var(--primary);
+            line-height: 1.8; font-size: 1.25rem; text-align: left;
+            white-space: pre-wrap; display: none; animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .dedicace { color: var(--primary); font-weight: bold; margin-bottom: 15px; display: block; }
+    </style>
 </head>
 <body>
 
-<div id="welcome" class="screen">
-  <h1>Générateur de Poèmes</h1>
-  <p style="margin: 20px 0;">Une expérience unique par PeprimetCk</p>
-  <button onclick="startApp()">Entrer dans l'univers</button>
-</div>
+<div class="container">
+    <h1>🖋️ Poetix</h1>
+    <p style="opacity: 0.7; margin-top: 10px;">L'élégance des saisons et des mots</p>
 
-<div id="app" class="screen" style="display:none;">
-  <h1>📝 Création</h1>
-  <input type="text" id="userName" placeholder="Ton prénom (optionnel)">
-  <br>
-  <select id="theme">
-    <option value="amour">Amour</option>
-    <option value="nature">Nature</option>
-    <option value="reve">Rêve</option>
-    <option value="solitude">Solitude</option>
-  </select>
-  <select id="length">
-    <option value="short">Court (4 vers)</option>
-    <option value="long">Long (8 vers)</option>
-  </select>
-  <br><br>
-  <button onclick="generatePoem()">Générer le poème</button>
-  <p id="cooldownMsg" style="margin-top:15px; color: #ff7a90;"></p>
-  <div id="poemContainer"></div>
+    <div class="controls">
+        <input type="text" id="target" style="grid-column: span 2;" placeholder="Nom du destinataire (optionnel)">
+        
+        <select id="themeSelect"></select>
+        
+        <select id="length">
+            <option value="4">4 Vers (Quatrain)</option>
+            <option value="8">8 Vers (Huitain)</option>
+        </select>
+        
+        <button onclick="generate()">Invoquer la Muse</button>
+    </div>
+
+    <div id="poemDisplay"></div>
 </div>
 
 <script>
-let lastClick = 0;
-
-const themes = {
-  amour: ["le cœur", "le lien", "la présence", "la chaleur", "l'attente", "le regard", "le désir", "l'étreinte"],
-  nature: ["le vent", "la terre", "la lumière", "la forêt", "le ciel", "la rivière", "l'aurore", "la brume"],
-  reve: ["un ailleurs", "le possible", "le flou", "une image", "le songe", "l'horizon", "le mystère", "l'ombre"],
-  solitude: ["le silence", "l'absence", "le vide", "le calme", "le retrait", "le temps", "la nuit", "l'écho"]
+const library = {
+    themes: {
+        amour: ["le cœur", "la passion", "ton regard", "la flamme", "l'étreinte", "ton souffle", "le lien", "ton âme"],
+        romance: ["les pétales", "la douce lettre", "le clair de lune", "le rendez-vous", "le parfum des roses", "un violon", "la valse", "un secret"],
+        printemps: ["le bourgeon", "l'hirondelle", "la rosée", "la jeune fleur", "le réveil vert", "le zéphyr", "le jardin", "la clarté"],
+        été: ["le soleil d'or", "le blé mûr", "la chaleur", "le ciel azur", "le chant des cigales", "le sable chaud", "le zénith", "l'éclat"],
+        automne: ["la feuille morte", "la brume", "l'ambre", "la pluie fine", "le vent frais", "la forêt rousse", "le crépuscule", "le soir"],
+        hiver: ["le givre", "la neige pure", "le cristal", "le froid", "la bise", "le manteau blanc", "le feu de bois", "la glace"],
+        nature: ["la rivière", "la forêt", "le vent sauvage", "la montagne", "l'aurore", "le chêne", "la fleur sèche", "le val"],
+        nostalgie: ["le passé", "le vieux banc", "le souvenir", "l'enfance", "le temps", "la photo", "l'instant perdu", "l'hier"],
+        reve: ["le songe", "le nuage", "l'horizon", "le miroir", "le vol libre", "l'imaginaire", "l'ombre", "l'onirisme"]
+    },
+    starters: ["Dans la paix de", "Sous l'éclat de", "Comme un écho à", "Soudain,", "Parfois,", "Malgré", "Au creux de", "Sans un bruit,"],
+    connectors: ["s'éveille devant", "dessine", "révèle", "emporte", "berce doucement", "embrase", "illumine", "efface"],
+    endings: ["l'infini.", "un souvenir.", "le destin.", "la clarté.", "l'éternité.", "un soupir.", "la vie.", "le monde."]
 };
 
-const starters = ["Parfois,", "Sans prévenir,", "On devine que", "Avec le temps,", "Dans le silence,", "Soudain,", "Sous l'éclat,", "Ici,"];
-const connectors = ["s'éveille", "s'efface", "brille", "se dessine", "vibre", "voyage", "se perd", "demeure"];
-const endings = ["au creux de l'âme.", "comme un secret.", "et tout s'éclaire.", "sans un bruit.", "éternellement.", "dans l'infini.", "loin des regards.", "pour l'éternité."];
+const select = document.getElementById('themeSelect');
+Object.keys(library.themes).forEach(t => {
+    let opt = document.createElement('option');
+    opt.value = t;
+    opt.innerHTML = t.charAt(0).toUpperCase() + t.slice(1);
+    select.appendChild(opt);
+});
 
-function startApp() {
-  document.getElementById("welcome").style.display = "none";
-  document.getElementById("app").style.display = "block";
-}
+function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-// Fonction pour mélanger un tableau (Fisher-Yates)
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+function generate() {
+    const target = document.getElementById('target').value;
+    const theme = document.getElementById('themeSelect').value;
+    const length = parseInt(document.getElementById('length').value);
+    
+    let words = shuffle([...library.themes[theme]]);
+    let starts = shuffle([...library.starters]);
+    let connects = shuffle([...library.connectors]);
+    let ends = shuffle([...library.endings]);
 
-function generatePoem() {
-  const now = Date.now();
-  if (now - lastClick < 5000) {
-    document.getElementById("cooldownMsg").innerText = "⏳ L'inspiration demande un peu de temps...";
-    return;
-  }
-  lastClick = now;
-  document.getElementById("cooldownMsg").innerText = "";
+    let poem = "";
+    if(target) poem += `<span class="dedicace">Pour ${target},</span>`;
 
-  const name = document.getElementById("userName").value.trim();
-  const themeKey = document.getElementById("theme").value;
-  const isLong = document.getElementById("length").value === "long";
-  const count = isLong ? 8 : 4;
+    for(let i = 0; i < length; i++) {
+        let w = words[i % words.length];
+        let s = starts[i % starts.length];
+        let c = connects[i % connects.length];
+        let e = ends[i % ends.length];
+        poem += `${s} ${w} ${c} ${e}\n`;
+        if((i+1) % 4 === 0) poem += "\n";
+    }
 
-  // ON CRÉE DES COPIES MÉLANGÉES POUR ÉVITER LES RÉPÉTITIONS
-  let currentStarters = shuffle([...starters]);
-  let currentConnectors = shuffle([...connectors]);
-  let currentEndings = shuffle([...endings]);
-  let currentWords = shuffle([...themes[themeKey]]);
-
-  let poemContent = "";
-  for (let i = 0; i < count; i++) {
-    // On pioche et on retire l'élément (pop) pour qu'il ne revienne plus
-    poemContent += `${currentStarters.pop()} ${currentWords.pop()} ${currentConnectors.pop()}, ${currentEndings.pop()}\n`;
-  }
-
-  const div = document.createElement("div");
-  div.className = "poem";
-  
-  let finalHTML = name !== "" ? `<span class="dedicace">Dédié à ${name},</span>` : "";
-  finalHTML += `<div>${poemContent.trim()}</div>`;
-  
-  div.innerHTML = finalHTML;
-  document.getElementById("poemContainer").prepend(div);
+    const display = document.getElementById('poemDisplay');
+    display.innerHTML = poem.trim();
+    display.style.display = 'block';
 }
 </script>
 

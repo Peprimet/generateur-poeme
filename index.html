@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poetix | Anthologie Rouge</title>
+    <title>Poetix Pro | Anthologie</title>
     <style>
-        /* RESET & FORCE STYLING */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -17,61 +16,57 @@
         }
 
         .container {
-            width: 100%; max-width: 700px;
+            width: 100%; max-width: 650px;
             background: #1a1a1a;
-            padding: 40px; border-radius: 20px;
+            padding: 35px; border-radius: 20px;
             border: 1px solid #333;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        h1 { text-align: center; margin-bottom: 30px; font-weight: 300; letter-spacing: 2px; }
+        h1 { text-align: center; margin-bottom: 25px; font-weight: 300; letter-spacing: 2px; }
 
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .full { grid-column: span 2; }
 
-        /* STYLE DES CHAMPS */
         input {
-            width: 100%; padding: 15px; border-radius: 10px;
+            width: 100%; padding: 12px; border-radius: 8px;
             border: 1px solid #444; background: #222; color: white;
-            font-size: 1rem; outline: none;
+            font-size: 0.95rem; outline: none;
         }
 
-        /* LE SÉLECTEUR AVEC FOND ROUGE CIBLE */
         select {
-            width: 100%; padding: 15px; border-radius: 10px;
+            width: 100%; padding: 12px; border-radius: 8px;
             border: 1px solid #ff4d4d; 
-            background-color: #8b0000 !important; /* Rouge foncé pour l'arrière-plan */
+            background-color: #8b0000 !important;
             color: #ffffff !important; 
-            font-size: 1rem; outline: none;
+            font-size: 0.95rem; outline: none;
             cursor: pointer;
-            appearance: none; -webkit-appearance: none; -moz-appearance: none; /* Supprime le style OS */
+            appearance: none; -webkit-appearance: none;
         }
 
-        /* Style des options pour éviter le retour du blanc */
-        select option {
-            background-color: #8b0000;
-            color: white;
-        }
+        select option { background-color: #8b0000; color: white; }
 
         button {
-            grid-column: span 2; padding: 18px; margin-top: 10px;
-            border-radius: 10px; border: none; cursor: pointer;
+            grid-column: span 2; padding: 15px; margin-top: 10px;
+            border-radius: 8px; border: none; cursor: pointer;
             background: #e94560; color: white; font-weight: bold;
-            font-size: 1.1rem; transition: 0.3s;
+            font-size: 1rem; transition: 0.3s;
         }
 
-        button:hover { background: #ff5c77; transform: scale(1.01); }
+        button:hover { background: #ff5c77; }
 
-        /* ZONE DU POÈME */
+        /* ZONE DU POÈME RÉDUITE */
         #poemDisplay {
-            margin-top: 30px; padding: 30px; border-left: 4px solid #e94560;
-            background: rgba(0,0,0,0.4); line-height: 2; font-size: 1.3rem;
+            margin-top: 25px; padding: 25px; border-left: 3px solid #e94560;
+            background: rgba(0,0,0,0.3); 
+            line-height: 1.7; 
+            font-size: 1.1rem; /* Taille réduite ici */
             font-style: italic; white-space: pre-wrap; display: none;
-            animation: fadeIn 1s ease;
+            animation: fadeIn 0.8s ease;
         }
 
         .signature {
-            margin-top: 25px; text-align: center; opacity: 0.6; font-size: 0.95rem; font-style: normal;
+            margin-top: 20px; text-align: center; opacity: 0.5; font-size: 0.85rem;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -80,10 +75,10 @@
 <body>
 
 <div class="container">
-    <h1>🖋️ Poetix Pro</h1>
+    <h1>✒️ Poetix Pro</h1>
     
     <div class="controls">
-        <input type="text" id="target" class="full" placeholder="Dédié à (optionnel)...">
+        <input type="text" id="target" class="full" placeholder="Dédié à...">
         
         <select id="themeSelect">
             <option value="amour">💖 Amour</option>
@@ -174,7 +169,6 @@ function generate() {
     if(target) poem += `<span style="color:#e94560">Dédié à ${target},</span>\n\n`;
 
     for(let i = 0; i < length; i++) {
-        // Construction complexe : Intro + Sujet + Action + Chute
         let line = `${shuffle([...theme.i])[0]} ${shuffle([...theme.s])[0]} ${shuffle([...theme.a])[0]} ${shuffle([...theme.c])[0]}`;
         poem += line + "\n";
         if((i+1) % 4 === 0 && (i+1) !== length) poem += "\n";
@@ -184,9 +178,7 @@ function generate() {
     display.innerHTML = poem.trim();
     display.style.display = 'block';
     document.getElementById('sign').style.display = 'block';
-    display.scrollIntoView({ behavior: 'smooth' });
 }
 </script>
-
 </body>
 </html>

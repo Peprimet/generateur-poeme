@@ -3,130 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Athanor Poétique | Anthologie</title>
+    <title>L'Athanor Poétique</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            min-height: 100vh;
-            background: #0b0e14;
+            min-height: 100vh; background: #0b0e14;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #f5f5f5;
-            display: flex; justify-content: center; align-items: center; 
-            overflow-x: hidden;
+            color: #f5f5f5; display: flex; justify-content: center; align-items: center;
         }
-
-        /* --- ÉCRAN D'ACCUEIL --- */
         #welcomeScreen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #0b0e14;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 100;
-            transition: opacity 1s ease, visibility 1s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b0e14; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 100;
+            transition: opacity 0.8s ease;
         }
-
         #welcomeScreen h1 {
-            font-family: 'Georgia', serif;
-            font-size: 2.5rem;
-            font-weight: 300;
-            letter-spacing: 5px;
-            margin-bottom: 30px;
-            background: linear-gradient(to right, #f5f5f5, #e94560);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: fadeInTitle 2s ease;
+            font-family: 'Georgia', serif; font-size: 2.5rem; letter-spacing: 5px;
+            margin-bottom: 30px; color: #e94560;
         }
-
         .btn-start {
-            padding: 15px 40px;
-            background: transparent;
-            border: 1px solid #e94560;
-            color: #e94560;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.4s ease;
-            text-transform: uppercase;
+            padding: 15px 40px; background: transparent; border: 1px solid #e94560;
+            color: #e94560; cursor: pointer; border-radius: 50px; text-transform: uppercase;
         }
-
-        .btn-start:hover {
-            background: #e94560;
-            color: white;
-            box-shadow: 0 0 20px rgba(233, 69, 96, 0.4);
-        }
-
-        /* --- CONTENEUR PRINCIPAL --- */
         .container {
-            width: 100%; max-width: 550px;
-            background: #1a1a1a;
-            padding: 25px; border-radius: 12px;
-            border: 1px solid #333;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            opacity: 0;
-            transform: translateY(30px);
-            filter: blur(10px);
-            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-            pointer-events: none;
+            width: 100%; max-width: 550px; background: #1a1a1a;
+            padding: 25px; border-radius: 12px; border: 1px solid #333;
+            opacity: 0; transform: translateY(20px); transition: all 0.6s ease;
         }
-
-        .container.active {
-            opacity: 1;
-            transform: translateY(0);
-            filter: blur(0);
-            pointer-events: all;
-        }
-
-        h1.main-title { text-align: center; margin-bottom: 20px; font-weight: 400; font-size: 1.3rem; letter-spacing: 1px; }
-
+        .container.active { opacity: 1; transform: translateY(0); }
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .full { grid-column: span 2; }
-
-        input, select, button {
-            font-family: inherit;
-            padding: 10px; border-radius: 6px; border: 1px solid #444;
-            font-size: 0.85rem; outline: none;
-        }
-
-        input { background: #222; color: white; border: 1px solid #333; }
-
-        select {
-            background-color: #8b0000 !important;
-            color: #ffffff !important; 
-            border: 1px solid #ff4d4d;
-            cursor: pointer;
-            appearance: none; -webkit-appearance: none;
-        }
-
-        select option { background-color: #8b0000; color: white; }
-
+        input, select, button { padding: 10px; border-radius: 6px; border: 1px solid #444; font-size: 0.85rem; }
+        input { background: #222; color: white; }
+        select { background-color: #8b0000 !important; color: white !important; border: 1px solid #ff4d4d; }
         .btn-forge {
-            grid-column: span 2; margin-top: 5px;
-            background: #e94560; color: white; border: none;
-            font-weight: bold; cursor: pointer; transition: 0.2s;
+            grid-column: span 2; margin-top: 5px; background: #e94560;
+            color: white; border: none; font-weight: bold; cursor: pointer;
         }
-
-        .btn-forge:disabled {
-            background: #444;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
+        .btn-forge:disabled { background: #444; cursor: not-allowed; opacity: 0.6; }
         #poemDisplay {
             margin-top: 20px; padding: 15px; border-left: 2px solid #e94560;
-            background: rgba(255,255,255,0.02); 
-            line-height: 1.5; font-size: 14px; 
-            font-family: 'Georgia', serif; font-style: italic; 
-            white-space: pre-wrap; display: none;
-        }
-
-        .signature { margin-top: 15px; text-align: center; opacity: 0.5; font-size: 0.75rem; }
-
-        @keyframes fadeInTitle {
-            from { opacity: 0; letter-spacing: 15px; filter: blur(10px); }
-            to { opacity: 1; letter-spacing: 5px; filter: blur(0); }
+            background: rgba(255,255,255,0.02); font-family: 'Georgia', serif;
+            font-style: italic; white-space: pre-wrap; display: none;
         }
     </style>
 </head>
@@ -134,45 +52,35 @@
 
 <div id="welcomeScreen">
     <h1>L'ATHANOR POÉTIQUE</h1>
-    <button class="btn-start" onclick="startApp()">Entrer dans l'Anthologie</button>
+    <button class="btn-start" onclick="startApp()">Commencer</button>
 </div>
 
 <div class="container" id="mainContainer">
-    <h1 class="main-title">✒️ Poetix Pro</h1>
+    <h1 style="text-align:center; margin-bottom:20px;">✒️ Poetix Pro</h1>
     <div class="controls">
         <input type="text" id="target" class="full" placeholder="À qui sont ces mots ?">
         <select id="themeSelect">
             <option value="amour">💖 Amour</option>
             <option value="romance">🌹 Romance</option>
-            <option value="printemps">🌱 Printemps</option>
-            <option value="ete">☀️ Été</option>
-            <option value="automne">🍂 Automne</option>
-            <option value="hiver">❄️ Hiver</option>
             <option value="reve">✨ Rêve</option>
-            <option value="solitude">🌙 Solitude</option>
             <option value="espace">🚀 Espace</option>
-            <option value="abysse">🌊 Abysse</option>
-            <option value="melancolie">🎻 Mélancolie</option>
         </select>
         <select id="length">
-            <option value="8">8 Vers (Court)</option>
-            <option value="16">16 Vers (Long)</option>
+            <option value="8">8 Vers</option>
+            <option value="16">16 Vers</option>
         </select>
         <button class="btn-forge" id="forgeBtn" onclick="handleGeneration()">Forger le poème</button>
     </div>
     <div id="poemDisplay"></div>
-    <div id="sign" class="signature" style="display:none;">« Le monde est vaste, et tu es venu. » ✨</div>
 </div>
 
 <script>
 function startApp() {
-    const welcome = document.getElementById('welcomeScreen');
-    const container = document.getElementById('mainContainer');
-    welcome.style.opacity = '0';
+    document.getElementById('welcomeScreen').style.opacity = '0';
     setTimeout(() => {
-        welcome.style.visibility = 'hidden';
-        container.classList.add('active');
-    }, 1000);
+        document.getElementById('welcomeScreen').style.display = 'none';
+        document.getElementById('mainContainer').classList.add('active');
+    }, 800);
 }
 
 const library = {
@@ -183,38 +91,21 @@ const library = {
             a: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "tisse un espoir"],
             c: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des jours.", "pour l'éternité."]
         },
-        romance: {
-            i: ["Doucement,", "Sur le balcon,", "Dans la brise,", "Sous la lune,"],
-            s: ["le violon", "le clair de lune", "le parfum des roses", "la valse"],
-            a: ["feuillette le rêve", "murmure des mots anciens", "soupire en secret"],
-            c: ["comme un vieux roman.", "dans la ville endormie.", "sous l'aile des heures."]
-        },
-        espace: {
-            i: ["Dans l'infini,", "Sous les étoiles,", "Dans le vide noir,"],
-            s: ["la comète", "le trou noir", "la nébuleuse", "la poussière d'étoile"],
-            a: ["voyage sans fin", "dévore la lumière", "brille de mille feux"],
-            c: ["vers un univers lointain.", "dans le silence des sphères.", "à jamais."]
-        },
-        melancolie: {
-            i: ["Dans la tristesse,", "Sous les remords,", "Avec regret,"],
-            s: ["le cœur lourd", "la larme", "le passé", "le chagrin"],
-            a: ["joue une symphonie", "coule sur la joue", "efface le sourire"],
-            c: ["comme une ombre fidèle.", "dans le froid de l'âme.", "pour toujours."]
-        }
-        // Les autres thèmes peuvent être ajoutés ici sur le même modèle
+        romance: { i: ["Doucement,"], s: ["le violon"], a: ["danse"], c: ["sous la soie."] },
+        reve: { i: ["Dans le songe,"], s: ["le nuage"], a: ["invente des cieux"], c: ["loin des regards."] },
+        espace: { i: ["Dans le vide,"], s: ["l'astre"], a: ["brille"], c: ["à l'infini."] }
     }
 };
 
 function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-// LOGIQUE : GÉNÉRATION INSTANTANÉE PUIS COOLDOWN
 function handleGeneration() {
     const btn = document.getElementById('forgeBtn');
     
-    // 1. Générer le poème immédiatement
+    // 1. ACTION IMMÉDIATE : On génère le poème tout de suite
     generate();
 
-    // 2. Lancer le délai de 5 secondes pour la suite
+    // 2. COOLDOWN : On bloque le bouton SEULEMENT APRÈS le clic
     let timeLeft = 5;
     btn.disabled = true;
     
@@ -234,10 +125,10 @@ function generate() {
     const target = document.getElementById('target').value;
     const themeKey = document.getElementById('themeSelect').value;
     const length = parseInt(document.getElementById('length').value);
-    const theme = library.themes[themeKey] || library.themes.amour;
+    const theme = library.themes[themeKey];
 
     let poem = "";
-    if(target) poem += `<span style="color:#e94560; font-weight:bold; font-family:sans-serif; font-size:13px">À ${target},</span>\n\n`;
+    if(target) poem += `<span style="color:#e94560; font-weight:bold;">À ${target},</span>\n\n`;
 
     for(let i = 0; i < length; i++) {
         let line = `${shuffle([...theme.i])[0]} ${shuffle([...theme.s])[0]} ${shuffle([...theme.a])[0]} ${shuffle([...theme.c])[0]}`;
@@ -248,7 +139,6 @@ function generate() {
     const display = document.getElementById('poemDisplay');
     display.innerHTML = poem.trim();
     display.style.display = 'block';
-    document.getElementById('sign').style.display = 'block';
 }
 </script>
 </body>

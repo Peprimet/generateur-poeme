@@ -3,94 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poetix | Les Saisons du Cœur</title>
+    <title>Poetix | L'Art des Vers</title>
     <style>
-        :root { --primary: #e94560; --bg: #0f1220; --text: #f5f5f5; }
+        :root { --primary: #e94560; --bg: #0b0e14; --text: #f5f5f5; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
         body {
             min-height: 100vh;
-            background: var(--bg);
-            font-family: 'Georgia', serif;
-            color: var(--text);
+            background: radial-gradient(circle at top, #1a1a2e 0%, #0b0e14 100%);
+            font-family: 'Georgia', serif; color: var(--text);
             display: flex; justify-content: center; align-items: center; padding: 20px;
         }
-
         .container {
-            width: 100%; max-width: 650px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 40px; border-radius: 30px;
+            width: 100%; max-width: 700px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px); padding: 40px; border-radius: 25px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
         }
-
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; }
-        
-        input, select {
-            padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.1); color: white; font-size: 1rem; outline: none;
-        }
-
+        h1 { font-size: 2.2rem; text-align: center; margin-bottom: 30px; letter-spacing: 2px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        input, select, button { padding: 14px; border-radius: 12px; border: none; font-size: 1rem; outline: none; }
+        input, select { background: rgba(255,255,255,0.07); color: white; border: 1px solid rgba(255,255,255,0.1); }
         button {
-            padding: 15px; border-radius: 12px; border: none; font-size: 1.1rem;
-            background: linear-gradient(45deg, #e94560, #ff7a90);
-            color: white; cursor: pointer; font-weight: bold; transition: 0.4s;
-            grid-column: span 2;
+            background: linear-gradient(45deg, #e94560, #ff7a90); color: white;
+            font-weight: bold; cursor: pointer; transition: 0.3s; grid-column: span 2;
         }
-
-        button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(233, 69, 96, 0.4); }
-
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(233, 69, 96, 0.4); }
         #poemDisplay {
-            margin-top: 30px; padding: 30px; background: rgba(255,255,255,0.03);
-            border-radius: 20px; border-left: 4px solid var(--primary);
-            line-height: 1.8; font-size: 1.25rem; text-align: left;
-            white-space: pre-wrap; display: none; animation: fadeIn 0.8s ease;
+            margin-top: 30px; padding: 30px; background: rgba(0,0,0,0.25);
+            border-radius: 15px; border-left: 3px solid var(--primary);
+            line-height: 1.8; font-size: 1.3rem; font-style: italic;
+            white-space: pre-wrap; display: none; animation: fadeIn 1s ease;
         }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .dedicace { color: var(--primary); font-weight: bold; margin-bottom: 15px; display: block; }
+        .copy-btn {
+            margin-top: 15px; background: transparent; border: 1px solid var(--primary);
+            color: var(--primary); font-size: 0.8rem; padding: 8px; width: 120px;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>🖋️ Poetix</h1>
-    <p style="opacity: 0.7; margin-top: 10px;">L'élégance des saisons et des mots</p>
-
     <div class="controls">
-        <input type="text" id="target" style="grid-column: span 2;" placeholder="Nom du destinataire (optionnel)">
-        
+        <input type="text" id="target" class="full" placeholder="À qui sont ces mots ?">
         <select id="themeSelect"></select>
-        
         <select id="length">
-            <option value="4">4 Vers (Quatrain)</option>
-            <option value="8">8 Vers (Huitain)</option>
+            <option value="8">8 Vers (Court)</option>
+            <option value="16">16 Vers (Long & Riche)</option>
         </select>
-        
-        <button onclick="generate()">Invoquer la Muse</button>
+        <button onclick="generate()">Forger le poème</button>
     </div>
-
     <div id="poemDisplay"></div>
+    <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copy()">Copier les vers</button>
 </div>
 
 <script>
 const library = {
+    // Structure : Sujet | Action | Complément / Métaphore
     themes: {
-        amour: ["le cœur", "la passion", "ton regard", "la flamme", "l'étreinte", "ton souffle", "le lien", "ton âme"],
-        romance: ["les pétales", "la douce lettre", "le clair de lune", "le rendez-vous", "le parfum des roses", "un violon", "la valse", "un secret"],
-        printemps: ["le bourgeon", "l'hirondelle", "la rosée", "la jeune fleur", "le réveil vert", "le zéphyr", "le jardin", "la clarté"],
-        été: ["le soleil d'or", "le blé mûr", "la chaleur", "le ciel azur", "le chant des cigales", "le sable chaud", "le zénith", "l'éclat"],
-        automne: ["la feuille morte", "la brume", "l'ambre", "la pluie fine", "le vent frais", "la forêt rousse", "le crépuscule", "le soir"],
-        hiver: ["le givre", "la neige pure", "le cristal", "le froid", "la bise", "le manteau blanc", "le feu de bois", "la glace"],
-        nature: ["la rivière", "la forêt", "le vent sauvage", "la montagne", "l'aurore", "le chêne", "la fleur sèche", "le val"],
-        nostalgie: ["le passé", "le vieux banc", "le souvenir", "l'enfance", "le temps", "la photo", "l'instant perdu", "l'hier"],
-        reve: ["le songe", "le nuage", "l'horizon", "le miroir", "le vol libre", "l'imaginaire", "l'ombre", "l'onirisme"]
-    },
-    starters: ["Dans la paix de", "Sous l'éclat de", "Comme un écho à", "Soudain,", "Parfois,", "Malgré", "Au creux de", "Sans un bruit,"],
-    connectors: ["s'éveille devant", "dessine", "révèle", "emporte", "berce doucement", "embrase", "illumine", "efface"],
-    endings: ["l'infini.", "un souvenir.", "le destin.", "la clarté.", "l'éternité.", "un soupir.", "la vie.", "le monde."]
+        amour: {
+            subjects: ["Le cœur", "Ton regard", "La passion", "L'étreinte", "Un baiser", "Nos âmes", "La flamme", "Le souffle"],
+            actions: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "cherche une étoile", "tisse un lien", "effleure l'instant"],
+            complements: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des lendemains.", "sous le voile du temps.", "en lettres d'argent.", "pour ne plus s'effacer."]
+        },
+        romance: {
+            subjects: ["Le clair de lune", "Un violon", "La valse", "Le parfum des roses", "Une lettre", "Le soir", "Une mélodie", "Le ciel"],
+            actions: ["pose un baiser", "feuillette le rêve", "murmure des mots anciens", "soupire doucement", "referme ses paupières", "guide nos pas", "danse avec l'oubli", "chante pour nous"],
+            complements: ["comme un vieux roman.", "dans la ville endormie.", "sous l'aile des heures.", "aux reflets de soie.", "qu'un ange a conduit.", "loin de la poussière.", "avec une braise d'espoir.", "au creux du présent."]
+        },
+        printemps: {
+            subjects: ["Le bourgeon", "L'hirondelle", "La rosée", "Le vent messager", "Le jardin", "La clarté", "Le zéphyr", "La sève"],
+            actions: ["s'éveille en douceur", "écrit sur l'herbe", "traduit le cristal", "écarte l'hiver", "invente des mondes", "illumine les fleurs", "vole vers l'azur", "danse dans le jour"],
+            complements: ["dans un souffle nouveau.", "sur la terre féconde.", "comme un chant de liberté.", "aux couleurs retrouvées.", "sous le soleil naissant.", "que l'ombre redoute.", "en éclats de joie.", "vers un ciel sans fin."]
+        },
+        ete: {
+            subjects: ["Le soleil d'or", "Le blé mûr", "Le ciel azur", "Le zénith", "Le sable", "La chaleur", "L'éclat brûlant", "L'été"],
+            actions: ["embrase l'horizon", "fige le temps", "chante sa gloire", "coule sur les toits", "fait vibrer l'air", "ignore la nuit", "rayonne sans fin", "caresse les champs"],
+            complements: ["en une braise têtue.", "dans l'immensité bleue.", "sous un dôme de feu.", "pour l'éternité.", "comme un secret solaire.", "sans un seul regret.", "au milieu du silence.", "dans l'or du couchant."]
+        },
+        automne: {
+            subjects: ["La feuille morte", "Le vent", "La brume", "La forêt rousse", "Le crépuscule", "L'ambre", "La pluie", "L'heure"],
+            actions: ["tombe en tourbillons", "pleure sur les bancs", "efface les chemins", "raconte l'hier", "se teinte d'oubli", "glisse entre les branches", "frissonne au soir", "éteint les feux"],
+            complements: ["comme un vieux souvenir.", "dans la nostalgie pure.", "sous les pas des amants.", "que le gris envahit.", "vers le repos du monde.", "en murmures d'automne.", "sous un ciel fatigué.", "pour clore l'histoire."]
+        },
+        hiver: {
+            subjects: ["Le givre", "La neige", "Le froid", "La glace", "Le feu de bois", "Le silence", "Le ciel blanc", "Le cristal"],
+            actions: ["mord la poussière", "fige la rivière", "sculpte le vide", "brille sous la lune", "veille sur l'ombre", "endort la terre", "trace des chemins", "enferme le temps"],
+            complements: ["dans un écrin de sel.", "sous un voile de deuil.", "comme une étoile froide.", "au cœur des maisons.", "loin du tumulte.", "dans la pureté vive.", "pour une longue trêve.", "sans aucun bruit."]
+        },
+        // Thèmes d'origine conservés avec cette structure enrichie...
+        nature: {
+            subjects: ["La montagne", "La rivière", "Le chêne", "L'aurore", "Le val", "L'oiseau", "La terre", "L'horizon"],
+            actions: ["garde le secret", "traverse les âges", "défie l'orage", "salue le jour", "coule vers la mer", "prend son envol", "respire au matin", "regarde au loin"],
+            complements: ["dans la force brute.", "sous le regard des dieux.", "comme un pilier du ciel.", "en un souffle de vie.", "vers l'infini vaste.", "que rien n'arrête.", "au rythme du monde.", "pour l'éternité."]
+        },
+        nostalgie: {
+            subjects: ["Le passé", "Le vieux banc", "Le souvenir", "L'enfance", "La photo", "L'hier", "La trace", "Le temps"],
+            actions: ["revient en écho", "s'efface lentement", "frappe à la porte", "brille au fond", "rappelle les noms", "se perd en douceur", "cherche une épaule", "murmure nos joies"],
+            complements: ["dans l'ombre d'un rêve.", "que le vent emporte.", "comme un vieux roman.", "au fond du cœur.", "sous la poussière d'or.", "dans le silence bleu.", "sans faire de bruit.", "pour ne pas mourir."]
+        },
+        reve: {
+            subjects: ["Le songe", "Le nuage", "Le miroir", "L'imaginaire", "Le vol", "L'onirisme", "L'ombre", "L'ailleurs"],
+            actions: ["invente des cieux", "trompe le réel", "s'évade du corps", "joue avec l'âme", "crée des images", "dessine demain", "flotte en secret", "ouvre les portes"],
+            complements: ["loin des regards.", "dans un monde à part.", "comme un voile léger.", "au-delà des frontières.", "que l'esprit conduit.", "pour un instant pur.", "sous l'œil de la nuit.", "sans fin ni limite."]
+        }
+    }
 };
 
 const select = document.getElementById('themeSelect');
@@ -105,31 +124,44 @@ function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
 function generate() {
     const target = document.getElementById('target').value;
-    const theme = document.getElementById('themeSelect').value;
+    const themeKey = document.getElementById('themeSelect').value;
     const length = parseInt(document.getElementById('length').value);
-    
-    let words = shuffle([...library.themes[theme]]);
-    let starts = shuffle([...library.starters]);
-    let connects = shuffle([...library.connectors]);
-    let ends = shuffle([...library.endings]);
+    const theme = library.themes[themeKey];
+
+    // On prépare des sets de données mélangés pour éviter la répétition immédiate
+    let s = shuffle([...theme.subjects]);
+    let a = shuffle([...theme.actions]);
+    let c = shuffle([...theme.complements]);
 
     let poem = "";
-    if(target) poem += `<span class="dedicace">Pour ${target},</span>`;
+    if(target) poem += `<span style="color:var(--primary); font-size:1.1rem">À ${target},</span>\n\n`;
 
     for(let i = 0; i < length; i++) {
-        let w = words[i % words.length];
-        let s = starts[i % starts.length];
-        let c = connects[i % connects.length];
-        let e = ends[i % ends.length];
-        poem += `${s} ${w} ${c} ${e}\n`;
-        if((i+1) % 4 === 0) poem += "\n";
+        // Sélection circulaire si on dépasse le nombre de phrases uniques (mais avec shuffle, l'ordre change à chaque clic)
+        let sub = s[i % s.length];
+        let act = a[i % a.length];
+        let comp = c[i % c.length];
+        
+        poem += `${sub} ${act} ${comp}\n`;
+        
+        // Saut de strophe tous les 4 vers
+        if((i+1) % 4 === 0 && (i+1) !== length) poem += "\n";
     }
 
+    // Ajout de la conclusion signature
+    poem += `\n<span style="opacity:0.6; font-size:0.9rem">« Le monde est vaste, et tu es venu. » ✨</span>`;
+
     const display = document.getElementById('poemDisplay');
-    display.innerHTML = poem.trim();
+    display.innerHTML = poem;
     display.style.display = 'block';
+    document.getElementById('copyBtn').style.display = 'block';
+}
+
+function copy() {
+    const text = document.getElementById('poemDisplay').innerText;
+    navigator.clipboard.writeText(text);
+    alert("Poème copié !");
 }
 </script>
-
 </body>
 </html>

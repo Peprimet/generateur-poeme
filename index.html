@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poetix Pro | Anthologie</title>
+    <title>L'Athanor Poétique | Générateur d'Art</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -12,18 +12,75 @@
             background: #0b0e14;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: #f5f5f5;
-            display: flex; justify-content: center; align-items: center; padding: 20px;
+            display: flex; justify-content: center; align-items: center; 
+            overflow: hidden; /* Empêche le scroll pendant l'accueil */
         }
 
+        /* --- ÉCRAN D'ACCUEIL --- */
+        #welcomeScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b0e14;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 100;
+            transition: opacity 1s ease, visibility 1s;
+        }
+
+        #welcomeScreen h1 {
+            font-family: 'Georgia', serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #f5f5f5, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInTitle 2s ease;
+        }
+
+        .btn-start {
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid #e94560;
+            color: #e94560;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-start:hover {
+            background: #e94560;
+            color: white;
+            box-shadow: 0 0 20px rgba(233, 69, 96, 0.4);
+        }
+
+        /* --- CONTENEUR PRINCIPAL (L'OUTIL) --- */
         .container {
             width: 100%; max-width: 550px;
             background: #1a1a1a;
             padding: 25px; border-radius: 12px;
             border: 1px solid #333;
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(10px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
         }
 
-        h1 { text-align: center; margin-bottom: 20px; font-weight: 400; font-size: 1.3rem; letter-spacing: 1px; }
+        /* État actif après clic sur Commencer */
+        .container.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+            pointer-events: all;
+        }
+
+        h1.main-title { text-align: center; margin-bottom: 20px; font-weight: 400; font-size: 1.3rem; letter-spacing: 1px; }
 
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .full { grid-column: span 2; }
@@ -46,32 +103,40 @@
 
         select option { background-color: #8b0000; color: white; }
 
-        button {
+        .btn-forge {
             grid-column: span 2; margin-top: 5px;
             background: #e94560; color: white; border: none;
             font-weight: bold; cursor: pointer; transition: 0.2s;
         }
 
-        button:hover { background: #ff5c77; }
+        .btn-forge:hover { background: #ff5c77; }
 
         #poemDisplay {
             margin-top: 20px; padding: 15px; border-left: 2px solid #e94560;
             background: rgba(255,255,255,0.02); 
-            line-height: 1.5; 
-            font-size: 14px; 
-            font-family: 'Georgia', serif; 
-            font-style: italic; white-space: pre-wrap; display: none;
+            line-height: 1.5; font-size: 14px; 
+            font-family: 'Georgia', serif; font-style: italic; 
+            white-space: pre-wrap; display: none;
         }
 
-        .signature {
-            margin-top: 15px; text-align: center; opacity: 0.5; font-size: 0.75rem;
+        .signature { margin-top: 15px; text-align: center; opacity: 0.5; font-size: 0.75rem; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInTitle {
+            from { opacity: 0; letter-spacing: 15px; filter: blur(10px); }
+            to { opacity: 1; letter-spacing: 5px; filter: blur(0); }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>✒️ Poetix Pro</h1>
+<div id="welcomeScreen">
+    <h1>L'ATHANOR POÉTIQUE</h1>
+    <button class="btn-start" onclick="startApp()">Entrer dans l'Anthologie</button>
+</div>
+
+<div class="container" id="mainContainer">
+    <h1 class="main-title">✒️ Poetix Pro</h1>
     <div class="controls">
         <input type="text" id="target" class="full" placeholder="Dédié à (optionnel)...">
         <select id="themeSelect">
@@ -92,13 +157,27 @@
             <option value="16">16 Vers</option>
             <option value="24">24 Vers</option>
         </select>
-        <button onclick="generate()">Générer le poème</button>
+        <button class="btn-forge" onclick="generate()">Forger le poème</button>
     </div>
     <div id="poemDisplay"></div>
     <div id="sign" class="signature" style="display:none;">« Le monde est vaste, et tu es venu. » ✨</div>
 </div>
 
 <script>
+// --- LOGIQUE DE TRANSITION ---
+function startApp() {
+    const welcome = document.getElementById('welcomeScreen');
+    const container = document.getElementById('mainContainer');
+    
+    welcome.style.opacity = '0';
+    setTimeout(() => {
+        welcome.style.visibility = 'hidden';
+        container.classList.add('active');
+        document.body.style.overflow = 'auto';
+    }, 1000);
+}
+
+// --- BASE DE DONNÉES POÉTIQUE ---
 const library = {
     themes: {
         amour: {
@@ -122,13 +201,13 @@ const library = {
         ete: {
             i: ["Au plein midi,", "Sous l'or chaud,", "Dans le zénith,", "Face à la mer,", "Sous l'azur,", "Sur le sable,", "Dans la chaleur,", "Sous les pins,", "À l'ombre,", "Loin d'ici,"],
             s: ["le soleil", "le blé mûr", "le ciel pur", "le sable", "la chaleur", "l'éclat brûlant", "la mer", "la cigale", "l'été", "le mirage"],
-            a: ["embrase l'horizon", "fige le temps", "chante sa gloire", "coule sur les toits", "fait vibrer l'air", "brûle la peau", "scintille au loin", "caresse les vagues", "endort la terre", "illumine le sel"],
+            a: ["embrase l'horizon", "fige le temps", "chante sa glory", "coule sur les toits", "fait vibrer l'air", "brûle la peau", "scintille au loin", "caresse les vagues", "endort la terre", "illumine le sel"],
             c: ["en une braise têtue.", "dans l'immensité bleue.", "sous un dôme de feu.", "pour l'éternité.", "comme un secret solaire.", "sous le cri des oiseaux.", "dans le repos des jours.", "en un rêve doré.", "vers le soir orangé.", "sans fin."]
         },
         automne: {
             i: ["Sous le gris,", "Dans la brume,", "Au vent frais,", "Sous les nuages,", "Dans le soir,", "Parmi les bois,", "Sur le chemin,", "Loin du jour,", "Sous la pluie,", "Ici,"],
             s: ["la feuille morte", "la forêt rousse", "la pluie fine", "le crépuscule", "l'ambre des bois", "le souvenir", "le vent du nord", "le brouillard", "la terre", "le chêne"],
-            a: ["tombe en tourbillons", "pleure sur les bancs", "raconte l'hier", "glisse entre les mains", "éteint les feux", "danse sur le sol", "gémit dans les branches", "couvre la mousse", "cache le soleil", "attend la neige"],
+            a: ["tombe en tourbillons", "pleure sur les bancs", "raconte l'hier", "glisse entre les mains", "éteint les feux", "danse sur le sol", "gémit dans les branches", "coure la mousse", "cache le soleil", "attend la neige"],
             c: ["comme un vieux souvenir.", "dans la nostalgie pure.", "sous les pas des amants.", "que le vent emporte.", "vers le repos du monde.", "en murmures d'automne.", "sous le ciel de suie.", "dans le silence roux.", "comme un adieu.", "en silence."]
         },
         hiver: {

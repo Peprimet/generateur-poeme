@@ -11,40 +11,52 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: #f5f5f5; display: flex; justify-content: center; align-items: center;
         }
+
+        /* --- ÉCRAN D'ACCUEIL --- */
         #welcomeScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0b0e14; display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 100;
-            transition: opacity 0.8s ease;
+            transition: opacity 0.6s ease;
         }
         #welcomeScreen h1 {
             font-family: 'Georgia', serif; font-size: 2.5rem; letter-spacing: 5px;
-            margin-bottom: 30px; color: #e94560;
+            margin-bottom: 30px; color: #e94560; text-transform: uppercase;
         }
         .btn-start {
             padding: 15px 40px; background: transparent; border: 1px solid #e94560;
             color: #e94560; cursor: pointer; border-radius: 50px; text-transform: uppercase;
+            font-weight: bold; transition: 0.3s;
         }
+        .btn-start:hover { background: #e94560; color: white; }
+
+        /* --- CONTENEUR PRINCIPAL --- */
         .container {
             width: 100%; max-width: 550px; background: #1a1a1a;
             padding: 25px; border-radius: 12px; border: 1px solid #333;
-            opacity: 0; transform: translateY(20px); transition: all 0.6s ease;
+            opacity: 0; transform: translateY(20px); transition: all 0.5s ease;
         }
         .container.active { opacity: 1; transform: translateY(0); }
+
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .full { grid-column: span 2; }
-        input, select, button { padding: 10px; border-radius: 6px; border: 1px solid #444; font-size: 0.85rem; }
+
+        input, select, button { padding: 12px; border-radius: 6px; border: 1px solid #444; font-size: 0.9rem; outline: none; }
         input { background: #222; color: white; }
-        select { background-color: #8b0000 !important; color: white !important; border: 1px solid #ff4d4d; }
+        select { background-color: #8b0000; color: white; border: 1px solid #ff4d4d; cursor: pointer; }
+
         .btn-forge {
-            grid-column: span 2; margin-top: 5px; background: #e94560;
+            grid-column: span 2; margin-top: 10px; background: #e94560;
             color: white; border: none; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; transition: 0.2s;
         }
-        .btn-forge:disabled { background: #444; cursor: not-allowed; opacity: 0.6; }
+        .btn-forge:active { transform: scale(0.98); background: #ff5c77; }
+
         #poemDisplay {
-            margin-top: 20px; padding: 15px; border-left: 2px solid #e94560;
-            background: rgba(255,255,255,0.02); font-family: 'Georgia', serif;
+            margin-top: 20px; padding: 20px; border-left: 3px solid #e94560;
+            background: rgba(255,255,255,0.03); font-family: 'Georgia', serif;
             font-style: italic; white-space: pre-wrap; display: none;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -52,11 +64,11 @@
 
 <div id="welcomeScreen">
     <h1>L'ATHANOR POÉTIQUE</h1>
-    <button class="btn-start" onclick="startApp()">Commencer</button>
+    <button class="btn-start" onclick="startApp()">Entrer</button>
 </div>
 
 <div class="container" id="mainContainer">
-    <h1 style="text-align:center; margin-bottom:20px;">✒️ Poetix Pro</h1>
+    <h1 style="text-align:center; margin-bottom:20px; font-weight: 300;">✒️ Poetix Pro</h1>
     <div class="controls">
         <input type="text" id="target" class="full" placeholder="À qui sont ces mots ?">
         <select id="themeSelect">
@@ -64,23 +76,26 @@
             <option value="romance">🌹 Romance</option>
             <option value="reve">✨ Rêve</option>
             <option value="espace">🚀 Espace</option>
+            <option value="melancolie">🎻 Mélancolie</option>
         </select>
         <select id="length">
             <option value="8">8 Vers</option>
             <option value="16">16 Vers</option>
         </select>
-        <button class="btn-forge" id="forgeBtn" onclick="handleGeneration()">Forger le poème</button>
+        <button class="btn-forge" onclick="generate()">Forger le poème</button>
     </div>
     <div id="poemDisplay"></div>
 </div>
 
 <script>
+// Transition accueil -> site
 function startApp() {
-    document.getElementById('welcomeScreen').style.opacity = '0';
+    const ws = document.getElementById('welcomeScreen');
+    ws.style.opacity = '0';
     setTimeout(() => {
-        document.getElementById('welcomeScreen').style.display = 'none';
+        ws.style.display = 'none';
         document.getElementById('mainContainer').classList.add('active');
-    }, 800);
+    }, 600);
 }
 
 const library = {
@@ -93,34 +108,14 @@ const library = {
         },
         romance: { i: ["Doucement,"], s: ["le violon"], a: ["danse"], c: ["sous la soie."] },
         reve: { i: ["Dans le songe,"], s: ["le nuage"], a: ["invente des cieux"], c: ["loin des regards."] },
-        espace: { i: ["Dans le vide,"], s: ["l'astre"], a: ["brille"], c: ["à l'infini."] }
+        espace: { i: ["Dans le vide,"], s: ["l'astre"], a: ["brille"], c: ["à l'infini."] },
+        melancolie: { i: ["Sous la pluie,"], s: ["le chagrin"], a: ["efface l'heure"], c: ["dans l'oubli."] }
     }
 };
 
 function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-function handleGeneration() {
-    const btn = document.getElementById('forgeBtn');
-    
-    // 1. ACTION IMMÉDIATE : On génère le poème tout de suite
-    generate();
-
-    // 2. COOLDOWN : On bloque le bouton SEULEMENT APRÈS le clic
-    let timeLeft = 5;
-    btn.disabled = true;
-    
-    const cooldown = setInterval(() => {
-        btn.innerText = `Attendre (${timeLeft}s)`;
-        timeLeft--;
-        
-        if (timeLeft < 0) {
-            clearInterval(cooldown);
-            btn.disabled = false;
-            btn.innerText = "Forger le poème";
-        }
-    }, 1000);
-}
-
+// Génération INSTANTANÉE sans aucun blocage
 function generate() {
     const target = document.getElementById('target').value;
     const themeKey = document.getElementById('themeSelect').value;
@@ -128,7 +123,9 @@ function generate() {
     const theme = library.themes[themeKey];
 
     let poem = "";
-    if(target) poem += `<span style="color:#e94560; font-weight:bold;">À ${target},</span>\n\n`;
+    if(target) {
+        poem += `<span style="color:#e94560; font-weight:bold; font-style: normal;">À ${target},</span>\n\n`;
+    }
 
     for(let i = 0; i < length; i++) {
         let line = `${shuffle([...theme.i])[0]} ${shuffle([...theme.s])[0]} ${shuffle([...theme.a])[0]} ${shuffle([...theme.c])[0]}`;

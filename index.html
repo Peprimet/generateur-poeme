@@ -51,6 +51,14 @@
             text-transform: uppercase; transition: 0.2s;
         }
         .btn-forge:active { transform: scale(0.98); background: #ff5c77; }
+        
+        /* Style quand le bouton est bloqué */
+        .btn-forge:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         #poemDisplay {
             margin-top: 20px; padding: 20px; border-left: 3px solid #e94560;
@@ -82,7 +90,7 @@
             <option value="8">8 Vers</option>
             <option value="16">16 Vers</option>
         </select>
-        <button class="btn-forge" onclick="generate()">Forger le poème</button>
+        <button id="forgeBtn" class="btn-forge" onclick="generate()">Forger le poème</button>
     </div>
     <div id="poemDisplay"></div>
 </div>
@@ -115,13 +123,14 @@ const library = {
 
 function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
 
-// Génération INSTANTANÉE sans aucun blocage
 function generate() {
+    const btn = document.getElementById('forgeBtn');
     const target = document.getElementById('target').value;
     const themeKey = document.getElementById('themeSelect').value;
     const length = parseInt(document.getElementById('length').value);
     const theme = library.themes[themeKey];
 
+    // Génération du poème
     let poem = "";
     if(target) {
         poem += `<span style="color:#e94560; font-weight:bold; font-style: normal;">À ${target},</span>\n\n`;
@@ -136,6 +145,21 @@ function generate() {
     const display = document.getElementById('poemDisplay');
     display.innerHTML = poem.trim();
     display.style.display = 'block';
+
+    // --- LOGIQUE DU DÉLAI DE 5 SECONDES ---
+    let timeLeft = 5;
+    btn.disabled = true;
+    
+    const countdown = setInterval(() => {
+        btn.innerText = `Attendez (${timeLeft}s)`;
+        timeLeft--;
+
+        if (timeLeft < 0) {
+            clearInterval(countdown);
+            btn.disabled = false;
+            btn.innerText = "Forger le poème";
+        }
+    }, 1000);
 }
 </script>
 </body>

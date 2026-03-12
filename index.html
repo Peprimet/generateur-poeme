@@ -22,6 +22,7 @@
         #welcomeScreen h1 {
             font-family: 'Georgia', serif; font-size: 2.5rem; letter-spacing: 5px;
             margin-bottom: 30px; color: #e94560; text-transform: uppercase;
+            text-align: center;
         }
         .btn-start {
             padding: 15px 40px; background: transparent; border: 1px solid #e94560;
@@ -32,7 +33,7 @@
 
         /* --- CONTENEUR PRINCIPAL --- */
         .container {
-            width: 100%; max-width: 550px; background: #1a1a1a;
+            width: 95%; max-width: 550px; background: #1a1a1a;
             padding: 25px; border-radius: 12px; border: 1px solid #333;
             opacity: 0; transform: translateY(20px); transition: all 0.5s ease;
         }
@@ -51,14 +52,7 @@
             text-transform: uppercase; transition: 0.2s;
         }
         .btn-forge:active { transform: scale(0.98); background: #ff5c77; }
-        
-        /* Style quand le bouton est bloqué */
-        .btn-forge:disabled {
-            background: #444;
-            color: #888;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-forge:disabled { background: #444; color: #888; cursor: not-allowed; }
 
         #poemDisplay {
             margin-top: 20px; padding: 20px; border-left: 3px solid #e94560;
@@ -87,6 +81,8 @@
             <option value="melancolie">🎻 Mélancolie</option>
         </select>
         <select id="length">
+            <option value="2">2 Vers</option>
+            <option value="4">4 Vers</option>
             <option value="8">8 Vers</option>
             <option value="16">16 Vers</option>
         </select>
@@ -96,7 +92,6 @@
 </div>
 
 <script>
-// Transition accueil -> site
 function startApp() {
     const ws = document.getElementById('welcomeScreen');
     ws.style.opacity = '0';
@@ -109,19 +104,50 @@ function startApp() {
 const library = {
     themes: {
         amour: {
-            i: ["Dans le silence,", "Sous l'éclat,", "Ici,", "Parfois,", "Soudain,", "Au creux de l'âme,"],
-            s: ["le cœur", "ton regard", "la passion", "l'étreinte", "ton souffle", "notre lien"],
-            a: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "tisse un espoir"],
-            c: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des jours.", "pour l'éternité."]
+            i: ["Dans le silence,", "Sous l'éclat,", "Ici,", "Parfois,", "Soudain,", "Au creux de l'âme,", "D'un geste,", "Sans un mot,"],
+            s: ["le cœur", "ton regard", "la passion", "l'étreinte", "ton souffle", "notre lien", "ton ombre", "chaque pensée"],
+            a: ["avance en funambule", "dessine un secret", "traverse les nuits", "éclaire l'ombre", "vibre sous les heures", "tisse un espoir", "effleure l'instant", "brise les chaînes"],
+            c: ["au fond des silences.", "comme un matin fragile.", "sur un fil de cristal.", "que la rosée traduit.", "dans l'écho des jours.", "pour l'éternité.", "où le temps s'arrête.", "en une danse infinie."]
         },
-        romance: { i: ["Doucement,"], s: ["le violon"], a: ["danse"], c: ["sous la soie."] },
-        reve: { i: ["Dans le songe,"], s: ["le nuage"], a: ["invente des cieux"], c: ["loin des regards."] },
-        espace: { i: ["Dans le vide,"], s: ["l'astre"], a: ["brille"], c: ["à l'infini."] },
-        melancolie: { i: ["Sous la pluie,"], s: ["le chagrin"], a: ["efface l'heure"], c: ["dans l'oubli."] }
+        romance: {
+            i: ["Doucement,", "Sous la lune,", "À demi-mot,", "Lentement,"],
+            s: ["le violon", "une promesse", "le désir", "ton sourire"],
+            a: ["danse", "s'éveille", "chante", "s'illumine"],
+            c: ["sous la soie.", "contre ton épaule.", "dans le velours du soir.", "comme un aveu."]
+        },
+        reve: {
+            i: ["Dans le songe,", "Par-delà l'ombre,", "Aux confins,", "Éveillé,"],
+            s: ["le nuage", "ton image", "le mirage", "l'esprit"],
+            a: ["invente des cieux", "s'évapore", "dessine un monde", "flotte"],
+            c: ["loin des regards.", "dans l'irréel.", "où tout s'efface.", "parmi les songes."]
+        },
+        espace: {
+            i: ["Dans le vide,", "Parmi les comètes,", "Sous les nébuleuses,", "Loin d'ici,"],
+            s: ["l'astre", "ton étoile", "le pulsar", "le cosmos"],
+            a: ["brille", "gravite", "explose en silence", "voyage"],
+            c: ["à l'infini.", "dans l'éternité noire.", "vers d'autres mondes.", "au-delà du temps."]
+        },
+        melancolie: {
+            i: ["Sous la pluie,", "Dans la brume,", "Seul,", "Hélas,"],
+            s: ["le chagrin", "le souvenir", "le passé", "mon âme"],
+            a: ["efface l'heure", "s'égare", "pleure", "s'éteint"],
+            c: ["dans l'oubli.", "sous les décombres.", "au gré du vent.", "sans laisser de trace."]
+        }
     }
 };
 
-function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+// Fonction pour piocher un élément sans répétition immédiate
+function getUniqueRandom(arr, usedIndexes) {
+    if (usedIndexes.length >= arr.length) usedIndexes.length = 0; // Reset si on a tout utilisé
+    
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * arr.length);
+    } while (usedIndexes.includes(randomIndex));
+    
+    usedIndexes.push(randomIndex);
+    return arr[randomIndex];
+}
 
 function generate() {
     const btn = document.getElementById('forgeBtn');
@@ -130,15 +156,24 @@ function generate() {
     const length = parseInt(document.getElementById('length').value);
     const theme = library.themes[themeKey];
 
-    // Génération du poème
+    // Tableaux pour suivre les éléments déjà utilisés
+    const used = { i: [], s: [], a: [], c: [] };
+
     let poem = "";
     if(target) {
         poem += `<span style="color:#e94560; font-weight:bold; font-style: normal;">À ${target},</span>\n\n`;
     }
 
     for(let i = 0; i < length; i++) {
-        let line = `${shuffle([...theme.i])[0]} ${shuffle([...theme.s])[0]} ${shuffle([...theme.a])[0]} ${shuffle([...theme.c])[0]}`;
+        let partI = getUniqueRandom(theme.i, used.i);
+        let partS = getUniqueRandom(theme.s, used.s);
+        let partA = getUniqueRandom(theme.a, used.a);
+        let partC = getUniqueRandom(theme.c, used.c);
+
+        let line = `${partI} ${partS} ${partA} ${partC}`;
         poem += line + "\n";
+        
+        // Saut de ligne tous les 4 vers (strophes), mais pas à la fin
         if((i+1) % 4 === 0 && (i+1) !== length) poem += "\n";
     }
 
@@ -146,14 +181,12 @@ function generate() {
     display.innerHTML = poem.trim();
     display.style.display = 'block';
 
-    // --- LOGIQUE DU DÉLAI DE 5 SECONDES ---
+    // Anti-spam de 5 secondes
     let timeLeft = 5;
     btn.disabled = true;
-    
     const countdown = setInterval(() => {
         btn.innerText = `Attendez (${timeLeft}s)`;
         timeLeft--;
-
         if (timeLeft < 0) {
             clearInterval(countdown);
             btn.disabled = false;
